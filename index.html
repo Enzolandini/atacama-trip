@@ -25,6 +25,8 @@
       --tour-accent: #5ab882;
       --insurance: #4a2a4a;
       --insurance-accent: #c47acc;
+      --hotel: #2a3a1a;
+      --hotel-accent: #8bc34a;
       --danger: #c0392b;
       --radius: 12px;
       --radius-sm: 8px;
@@ -104,6 +106,8 @@
     .tab-btn[data-tab="passeios"].active { background: var(--tour-accent); color: #fff; }
     .tab-btn[data-tab="seguro"] { background: var(--insurance); color: var(--insurance-accent); }
     .tab-btn[data-tab="seguro"].active { background: var(--insurance-accent); color: #fff; }
+    .tab-btn[data-tab="hospedagem"] { background: var(--hotel); color: var(--hotel-accent); }
+    .tab-btn[data-tab="hospedagem"].active { background: var(--hotel-accent); color: #fff; }
 
     /* ---- MAIN ---- */
     #main { padding: 12px 14px 100px; }
@@ -143,6 +147,7 @@
     .doc-card[data-category="passagens"] { border-left-color: var(--flight-accent); }
     .doc-card[data-category="passeios"] { border-left-color: var(--tour-accent); }
     .doc-card[data-category="seguro"] { border-left-color: var(--insurance-accent); }
+    .doc-card[data-category="hospedagem"] { border-left-color: var(--hotel-accent); }
 
     .doc-card-inner {
       display: flex;
@@ -164,6 +169,7 @@
     .doc-card[data-category="passagens"] .doc-icon { background: var(--flight); color: var(--flight-accent); }
     .doc-card[data-category="passeios"] .doc-icon { background: var(--tour); color: var(--tour-accent); }
     .doc-card[data-category="seguro"] .doc-icon { background: var(--insurance); color: var(--insurance-accent); }
+    .doc-card[data-category="hospedagem"] .doc-icon { background: var(--hotel); color: var(--hotel-accent); }
 
     .doc-info { flex: 1; min-width: 0; }
     .doc-name {
@@ -191,6 +197,7 @@
     .doc-card[data-category="passagens"] .doc-badge { background: var(--flight); color: var(--flight-accent); }
     .doc-card[data-category="passeios"] .doc-badge { background: var(--tour); color: var(--tour-accent); }
     .doc-card[data-category="seguro"] .doc-badge { background: var(--insurance); color: var(--insurance-accent); }
+    .doc-card[data-category="hospedagem"] .doc-badge { background: var(--hotel); color: var(--hotel-accent); }
 
     .doc-actions {
       display: flex;
@@ -497,6 +504,7 @@
     <button class="tab-btn" data-tab="passagens" onclick="setTab('passagens')">Passagens</button>
     <button class="tab-btn" data-tab="passeios" onclick="setTab('passeios')">Passeios</button>
     <button class="tab-btn" data-tab="seguro" onclick="setTab('seguro')">Seguro</button>
+    <button class="tab-btn" data-tab="hospedagem" onclick="setTab('hospedagem')">Hospedagem</button>
   </div>
 </div>
 
@@ -517,6 +525,7 @@
           <option value="passagens">Passagens</option>
           <option value="passeios">Passeios</option>
           <option value="seguro">Seguro Viagem</option>
+          <option value="hospedagem">Hospedagem</option>
         </select>
       </div>
 
@@ -660,13 +669,13 @@ function showToast(msg) {
 }
 
 function categoryLabel(c) {
-  return { passagens: 'Passagem', passeios: 'Passeio', seguro: 'Seguro' }[c] || c;
+  return { passagens: 'Passagem', passeios: 'Passeio', seguro: 'Seguro', hospedagem: 'Hospedagem' }[c] || c;
 }
 function categoryIcon(c) {
   return { passagens: 'plane-icon', passeios: 'binoculars-icon', seguro: 'shield-icon' }[c] || '';
 }
 function categoryIconText(c) {
-  return { passagens: 'P', passeios: 'T', seguro: 'S' }[c] || '?';
+  return { passagens: 'P', passeios: 'T', seguro: 'S', hospedagem: 'H' }[c] || '?';
 }
 
 function flightLabel(code) {
