@@ -1,569 +1,284 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#1a1a2e" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Atacama 2025</title>
-  <link rel="manifest" href="manifest.json" />
-  <style>
-    :root {
-      --bg: #0f0f1a;
-      --surface: #1a1a2e;
-      --surface2: #22223b;
-      --surface3: #2d2d4e;
-      --accent: #c9a84c;
-      --accent2: #e8c97a;
-      --text: #f0f0f0;
-      --text2: #a0a0b8;
-      --flight: #2a4a6e;
-      --flight-accent: #4a90d9;
-      --tour: #2a4a3a;
-      --tour-accent: #5ab882;
-      --insurance: #4a2a4a;
-      --insurance-accent: #c47acc;
-      --hotel: #2a3a1a;
-      --hotel-accent: #8bc34a;
-      --transfer: #1a2e3a;
-      --transfer-accent: #4db6e8;
-      --danger: #c0392b;
-      --radius: 12px;
-      --radius-sm: 8px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#1a1a2e" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Atacama 2026</title>
+<link rel="manifest" href="manifest.json" />
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --surface2: #22223b;
+    --surface3: #2d2d4e;
+    --accent: #c9a84c;
+    --accent2: #e8c97a;
+    --text: #f0f0f0;
+    --text2: #a0a0b8;
+    --tour: #2a4a3a;
+    --tour-accent: #5ab882;
+    --insurance: #4a2a4a;
+    --insurance-accent: #c47acc;
+    --transfer: #1a2e3a;
+    --transfer-accent: #4db6e8;
+    --free: #2b2b2b;
+    --free-accent: #8a8a9a;
+    --danger: #c0392b;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    overscroll-behavior: none;
+  }
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--surface3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+  }
+  .header-top h1 { font-size: 1.15rem; font-weight: 700; color: var(--accent2); letter-spacing: 0.5px; }
+  .header-top .subtitle { font-size: 0.72rem; color: var(--text2); margin-top: 1px; }
+  .countdown {
+    font-size: 0.68rem;
+    color: var(--accent);
+    font-weight: 700;
+    background: rgba(201,168,76,0.12);
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+  .nav-tabs { display: flex; overflow-x: auto; scrollbar-width: none; padding: 0 12px 12px; gap: 8px; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0; border: none; border-radius: 20px; padding: 8px 16px;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.3px; background: var(--surface3); color: var(--text2);
+  }
+  .tab-btn.active { background: var(--accent); color: #000; }
+  #main { padding: 12px 14px 100px; }
+  #main.hidden { display: none; }
+  @media (min-width: 480px) { #main { max-width: 520px; margin: 0 auto; } .fab { right: calc(50% - 240px) !important; } }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  /* ---- shared card ---- */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-left: 4px solid var(--surface3);
+  }
+  .card.c-tour { border-left-color: var(--tour-accent); }
+  .card.c-transfer { border-left-color: var(--transfer-accent); }
+  .card.c-insurance { border-left-color: var(--insurance-accent); }
+  .card.c-free { border-left-color: var(--free-accent); background: var(--surface2); }
+  .card-body { padding: 13px 14px; }
+  .card-top { display: flex; align-items: flex-start; gap: 10px; }
+  .card-icon {
+    width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-size: 1.1rem; background: var(--surface3);
+  }
+  .c-tour .card-icon { background: var(--tour); }
+  .c-transfer .card-icon { background: var(--transfer); }
+  .c-insurance .card-icon { background: var(--insurance); }
+  .card-title { font-size: 0.92rem; font-weight: 700; line-height: 1.3; }
+  .card-sub { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+  .card-time {
+    font-size: 0.72rem; font-weight: 700; color: var(--accent2); background: rgba(201,168,76,0.12);
+    padding: 3px 9px; border-radius: 10px; white-space: nowrap; margin-left: auto;
+  }
+  .card-detail-list { margin-top: 10px; font-size: 0.8rem; color: var(--text2); line-height: 1.6; }
+  .card-detail-list b { color: var(--text); }
+  .card-notes { margin-top: 8px; font-size: 0.76rem; color: var(--text2); }
+  .card-notes ul { padding-left: 16px; margin-top: 4px; }
+  .card-notes li { margin-bottom: 3px; }
+  .card-actions { display: flex; gap: 8px; padding: 0 14px 13px; flex-wrap: wrap; }
+  .btn-sm {
+    border: none; border-radius: var(--radius-sm); padding: 7px 13px; font-size: 0.78rem;
+    font-weight: 600; cursor: pointer;
+  }
+  .btn-view { background: var(--surface3); color: var(--text); }
+  .btn-delete { background: rgba(192,57,43,0.15); color: #e74c3c; }
+  .tag {
+    display: inline-block; font-size: 0.65rem; padding: 2px 8px; border-radius: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; margin-right: 6px;
+  }
+  .tag-cancel { background: rgba(192,57,43,0.15); color: #e88; }
+  .tag-info { background: rgba(77,182,232,0.15); color: var(--transfer-accent); }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      min-height: 100vh;
-      overscroll-behavior: none;
-    }
+  /* ---- day group ---- */
+  .day-group { margin-bottom: 22px; }
+  .day-label {
+    font-size: 0.8rem; font-weight: 700; color: var(--accent2); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .day-label .day-num {
+    background: var(--accent); color: #000; border-radius: 8px; padding: 2px 8px; font-size: 0.78rem;
+  }
+  .day-label::after { content: ''; flex: 1; height: 1px; background: var(--surface3); }
 
-    /* ---- HEADER ---- */
-    .app-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--surface3);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px 10px;
-    }
-    .header-top h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--accent2);
-      letter-spacing: 0.5px;
-    }
-    .header-top .subtitle {
-      font-size: 0.72rem;
-      color: var(--text2);
-      margin-top: 1px;
-    }
-    .back-btn {
-      background: var(--surface3);
-      border: none;
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: none;
-    }
+  /* ---- free time block ---- */
+  .free-block {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 12px;
+    background: var(--surface2); border-radius: var(--radius); border-left: 4px dashed var(--free-accent);
+  }
+  .free-block .card-icon { background: var(--surface3); color: var(--free-accent); }
+  .free-block .card-title { color: var(--text2); font-weight: 600; font-size: 0.85rem; }
+  .free-block .card-time { background: rgba(160,160,184,0.12); color: var(--text2); }
 
-    /* ---- NAV TABS ---- */
-    .nav-tabs {
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding: 0 12px 12px;
-      gap: 8px;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      flex-shrink: 0;
-      border: none;
-      border-radius: 20px;
-      padding: 7px 16px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.3px;
-    }
-    .tab-btn[data-tab="all"] { background: var(--surface3); color: var(--text2); }
-    .tab-btn[data-tab="all"].active { background: var(--accent); color: #000; }
-    .tab-btn[data-tab="passagens"] { background: var(--flight); color: var(--flight-accent); }
-    .tab-btn[data-tab="passagens"].active { background: var(--flight-accent); color: #fff; }
-    .tab-btn[data-tab="passeios"] { background: var(--tour); color: var(--tour-accent); }
-    .tab-btn[data-tab="passeios"].active { background: var(--tour-accent); color: #fff; }
-    .tab-btn[data-tab="seguro"] { background: var(--insurance); color: var(--insurance-accent); }
-    .tab-btn[data-tab="seguro"].active { background: var(--insurance-accent); color: #fff; }
-    .tab-btn[data-tab="hospedagem"] { background: var(--hotel); color: var(--hotel-accent); }
-    .tab-btn[data-tab="hospedagem"].active { background: var(--hotel-accent); color: #fff; }
-    .tab-btn[data-tab="transfer"] { background: var(--transfer); color: var(--transfer-accent); }
-    .tab-btn[data-tab="transfer"].active { background: var(--transfer-accent); color: #fff; }
+  /* ---- section header ---- */
+  .section-header {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text2); margin: 18px 0 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-header:first-child { margin-top: 0; }
 
-    /* ---- MAIN ---- */
-    #main { padding: 12px 14px 100px; }
+  /* ---- intro banner ---- */
+  .intro-banner {
+    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; font-size: 0.8rem;
+    color: var(--text2); line-height: 1.5;
+  }
+  .intro-banner b { color: var(--accent2); }
 
-    /* ---- DAY GROUP ---- */
-    .day-group {
-      margin-bottom: 18px;
-    }
-    .day-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .day-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--surface3);
-    }
+  /* ---- insurance card detail ---- */
+  .cov-grid { display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; font-size: 0.78rem; margin-top: 8px; }
+  .cov-grid .cov-label { color: var(--text2); }
+  .cov-grid .cov-val { color: var(--text); font-weight: 600; text-align: right; }
+  details.cov-details summary {
+    cursor: pointer; font-size: 0.78rem; color: var(--accent2); font-weight: 600; padding: 6px 0;
+    list-style: none;
+  }
+  details.cov-details summary::-webkit-details-marker { display: none; }
+  details.cov-details summary::before { content: '▸ '; }
+  details.cov-details[open] summary::before { content: '▾ '; }
 
-    /* ---- DOC CARD ---- */
-    .doc-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      margin-bottom: 10px;
-      overflow: hidden;
-      border-left: 4px solid transparent;
-      transition: transform 0.15s;
-    }
-    .doc-card:active { transform: scale(0.98); }
-    .doc-card[data-category="passagens"] { border-left-color: var(--flight-accent); }
-    .doc-card[data-category="passeios"] { border-left-color: var(--tour-accent); }
-    .doc-card[data-category="seguro"] { border-left-color: var(--insurance-accent); }
-    .doc-card[data-category="hospedagem"] { border-left-color: var(--hotel-accent); }
-    .doc-card[data-category="transfer"] { border-left-color: var(--transfer-accent); }
+  /* ---- checklist ---- */
+  .check-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface2);
+    border-radius: var(--radius-sm); margin-bottom: 6px; cursor: pointer; user-select: none;
+  }
+  .check-item input { width: 19px; height: 19px; accent-color: var(--accent); flex-shrink: 0; }
+  .check-item span { font-size: 0.85rem; }
+  .check-item.checked span { color: var(--text2); text-decoration: line-through; }
+  .checklist-progress { font-size: 0.7rem; color: var(--text2); margin-bottom: 8px; }
+  .checklist-progress b { color: var(--accent2); }
 
-    .doc-card-inner {
-      display: flex;
-      align-items: center;
-      padding: 13px 14px;
-      gap: 12px;
-      cursor: pointer;
-    }
-    .doc-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 1.1rem;
-    }
-    .doc-card[data-category="passagens"] .doc-icon { background: var(--flight); color: var(--flight-accent); }
-    .doc-card[data-category="passeios"] .doc-icon { background: var(--tour); color: var(--tour-accent); }
-    .doc-card[data-category="seguro"] .doc-icon { background: var(--insurance); color: var(--insurance-accent); }
-    .doc-card[data-category="hospedagem"] .doc-icon { background: var(--hotel); color: var(--hotel-accent); }
-    .doc-card[data-category="transfer"] .doc-icon { background: var(--transfer); color: var(--transfer-accent); }
+  /* ---- FAB ---- */
+  .fab {
+    position: fixed; bottom: 24px; right: 20px; background: var(--accent); color: #000; border: none;
+    width: 56px; height: 56px; border-radius: 50%; font-size: 1.5rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4); z-index: 200; display: flex; align-items: center;
+    justify-content: center; transition: transform 0.2s;
+  }
+  .fab:active { transform: scale(0.92); }
 
-    .doc-info { flex: 1; min-width: 0; }
-    .doc-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .doc-meta {
-      font-size: 0.72rem;
-      color: var(--text2);
-      margin-top: 3px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .doc-badge {
-      font-size: 0.65rem;
-      padding: 2px 7px;
-      border-radius: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .doc-card[data-category="passagens"] .doc-badge { background: var(--flight); color: var(--flight-accent); }
-    .doc-card[data-category="passeios"] .doc-badge { background: var(--tour); color: var(--tour-accent); }
-    .doc-card[data-category="seguro"] .doc-badge { background: var(--insurance); color: var(--insurance-accent); }
-    .doc-card[data-category="hospedagem"] .doc-badge { background: var(--hotel); color: var(--hotel-accent); }
-    .doc-card[data-category="transfer"] .doc-badge { background: var(--transfer); color: var(--transfer-accent); }
+  /* ---- modal ---- */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; align-items: flex-end; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; padding: 20px 18px 40px; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle { width: 40px; height: 4px; background: var(--surface3); border-radius: 2px; margin: 0 auto 20px; }
+  .modal h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 18px; color: var(--accent2); }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--surface3); border-radius: var(--radius-sm);
+    color: var(--text); padding: 10px 12px; font-size: 0.9rem; outline: none; -webkit-appearance: none;
+  }
+  .form-group select option { background: var(--surface2); }
+  .upload-area { border: 2px dashed var(--surface3); border-radius: var(--radius); padding: 22px; text-align: center; cursor: pointer; position: relative; }
+  .upload-area.has-file { border-color: var(--tour-accent); }
+  .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-area-text { font-size: 0.82rem; color: var(--text2); pointer-events: none; }
+  .upload-area-text strong { display: block; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+  .btn-primary { background: var(--accent); color: #000; border: none; border-radius: var(--radius); padding: 14px; width: 100%; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .btn-cancel { background: var(--surface2); color: var(--text2); border: none; border-radius: var(--radius); padding: 12px; width: 100%; font-size: 0.9rem; cursor: pointer; margin-top: 8px; }
 
-    .doc-actions {
-      display: flex;
-      gap: 6px;
-      padding: 0 14px 12px;
-    }
-    .btn-sm {
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 6px 12px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-view { background: var(--surface3); color: var(--text); }
-    .btn-delete { background: rgba(192,57,43,0.15); color: #e74c3c; }
+  /* ---- viewer ---- */
+  .viewer-overlay { display: none; position: fixed; inset: 0; background: #000; z-index: 600; flex-direction: column; }
+  .viewer-overlay.open { display: flex; }
+  .viewer-header { background: var(--surface); padding: 12px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--surface3); }
+  .viewer-title { flex: 1; font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .close-btn { background: var(--surface3); border: none; color: var(--text); width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  #pdf-frame { flex: 1; border: none; background: #fff; }
+  .img-viewer { flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 12px; }
+  .img-viewer img { max-width: 100%; max-height: 100%; border-radius: 4px; }
 
-    /* ---- EMPTY STATE ---- */
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--text2);
-    }
-    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
-    .empty-state p { font-size: 0.9rem; }
+  .empty-state { text-align: center; padding: 40px 24px; color: var(--text2); }
+  .empty-state .empty-icon { font-size: 2.6rem; margin-bottom: 10px; opacity: 0.4; }
+  .empty-state p { font-size: 0.88rem; }
 
-    /* ---- FAB ---- */
-    .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 20px;
-      background: var(--accent);
-      color: #000;
-      border: none;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.4);
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .fab:active { transform: scale(0.92); }
-
-    /* ---- MODAL ---- */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 500;
-      align-items: flex-end;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border-radius: 20px 20px 0 0;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px 18px 40px;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .modal-handle {
-      width: 40px;
-      height: 4px;
-      background: var(--surface3);
-      border-radius: 2px;
-      margin: 0 auto 20px;
-    }
-    .modal h2 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 18px;
-      color: var(--accent2);
-    }
-
-    /* ---- FORM ---- */
-    .form-group { margin-bottom: 14px; }
-    .form-group label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text2);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--surface3);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      padding: 10px 12px;
-      font-size: 0.9rem;
-      outline: none;
-      -webkit-appearance: none;
-    }
-    .form-group input:focus,
-    .form-group select:focus { border-color: var(--accent); }
-    .form-group select option { background: var(--surface2); }
-
-    .upload-area {
-      border: 2px dashed var(--surface3);
-      border-radius: var(--radius);
-      padding: 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      position: relative;
-    }
-    .upload-area.has-file { border-color: var(--tour-accent); }
-    .upload-area input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-    }
-    .upload-area-text { font-size: 0.82rem; color: var(--text2); pointer-events: none; }
-    .upload-area-text strong { display: block; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: var(--radius);
-      padding: 14px;
-      width: 100%;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    .btn-cancel {
-      background: var(--surface2);
-      color: var(--text2);
-      border: none;
-      border-radius: var(--radius);
-      padding: 12px;
-      width: 100%;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
-    /* ---- PDF VIEWER MODAL ---- */
-    .viewer-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 600;
-      flex-direction: column;
-    }
-    .viewer-overlay.open { display: flex; }
-    .viewer-header {
-      background: var(--surface);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--surface3);
-    }
-    .viewer-title {
-      flex: 1;
-      font-size: 0.88rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .close-btn {
-      background: var(--surface3);
-      border: none;
-      color: var(--text);
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #pdf-frame {
-      flex: 1;
-      border: none;
-      background: #fff;
-    }
-    .img-viewer {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: auto;
-      padding: 12px;
-    }
-    .img-viewer img {
-      max-width: 100%;
-      max-height: 100%;
-      border-radius: 4px;
-    }
-
-    /* ---- CATEGORY SECTIONS (passagens/passeios/seguro view) ---- */
-    .section-header {
-      padding: 14px 0 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text2);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-header .count {
-      background: var(--surface3);
-      color: var(--text2);
-      font-size: 0.68rem;
-      padding: 2px 7px;
-      border-radius: 10px;
-    }
-
-    /* ---- FLIGHT SPECIAL DISPLAY ---- */
-    .flight-info {
-      font-size: 0.8rem;
-      color: var(--flight-accent);
-      margin-top: 2px;
-    }
-
-    /* ---- SCROLLABLE DATE PICKER ---- */
-    .date-scroll {
-      display: flex;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
-    .date-scroll::-webkit-scrollbar { display: none; }
-    .date-chip {
-      flex-shrink: 0;
-      background: var(--surface2);
-      border: 1px solid var(--surface3);
-      border-radius: 20px;
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      color: var(--text2);
-      transition: all 0.15s;
-    }
-    .date-chip.selected { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
-
-    /* ---- TOAST ---- */
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--surface3);
-      color: var(--text);
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 900;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ---- RESPONSIVE ---- */
-    @media (min-width: 480px) {
-      #main { max-width: 480px; margin: 0 auto; }
-      .fab { right: calc(50% - 220px); }
-    }
-  </style>
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface3); color: var(--text); padding: 10px 20px; border-radius: 20px;
+    font-size: 0.85rem; opacity: 0; transition: all 0.3s; z-index: 900; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
 </head>
 <body>
 
 <div class="app-header">
   <div class="header-top">
     <div>
-      <h1>Atacama 2025</h1>
-      <div class="subtitle">9 a 17 de agosto</div>
+      <h1>Atacama 2026</h1>
+      <div class="subtitle">9 a 17 de agosto · San Pedro de Atacama</div>
     </div>
-    <button class="back-btn" id="back-btn" onclick="goBack()">Voltar</button>
+    <div class="countdown" id="countdown"></div>
   </div>
   <div class="nav-tabs">
-    <button class="tab-btn active" data-tab="all" onclick="setTab('all')">Todos</button>
-    <button class="tab-btn" data-tab="passagens" onclick="setTab('passagens')">Passagens</button>
+    <button class="tab-btn active" data-tab="cronograma" onclick="setTab('cronograma')">Cronograma</button>
+    <button class="tab-btn" data-tab="documentos" onclick="setTab('documentos')">Documentos</button>
     <button class="tab-btn" data-tab="passeios" onclick="setTab('passeios')">Passeios</button>
-    <button class="tab-btn" data-tab="seguro" onclick="setTab('seguro')">Seguro</button>
-    <button class="tab-btn" data-tab="hospedagem" onclick="setTab('hospedagem')">Hospedagem</button>
-    <button class="tab-btn" data-tab="transfer" onclick="setTab('transfer')">Transfer</button>
+    <button class="tab-btn" data-tab="itens" onclick="setTab('itens')">Itens</button>
   </div>
 </div>
 
 <div id="main"></div>
 
-<button class="fab" onclick="openAddModal()" title="Adicionar documento">+</button>
+<button class="fab" id="fab" onclick="onFabClick()" title="Adicionar">+</button>
 
-<!-- ADD MODAL -->
+<!-- ADD MODAL (documentos/passeios extras) -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h2>Adicionar Documento</h2>
+    <h2 id="add-modal-title">Adicionar Documento</h2>
     <form id="add-form" onsubmit="submitDoc(event)">
-
-      <div class="form-group">
+      <div class="form-group" id="category-group">
         <label>Categoria</label>
-        <select id="f-category" onchange="onCategoryChange()">
-          <option value="passagens">Passagens</option>
-          <option value="passeios">Passeios</option>
-          <option value="seguro">Seguro Viagem</option>
-          <option value="hospedagem">Hospedagem</option>
-          <option value="transfer">Transfer</option>
+        <select id="f-category">
+          <option value="documentos">Documentos (ex: passagem aérea)</option>
+          <option value="passeios">Passeio / Voucher extra</option>
         </select>
       </div>
-
-      <div class="form-group" id="flight-selector-group">
-        <label>Voo</label>
-        <select id="f-flight">
-          <option value="">-- Selecione o voo --</option>
-          <option value="GRU-SCL">GRU → SCL (Sao Paulo - Santiago)</option>
-          <option value="SCL-CJC">SCL → CJC (Santiago - Calama)</option>
-          <option value="CJC-SCL">CJC → SCL (Calama - Santiago)</option>
-          <option value="SCL-GRU">SCL → GRU (Santiago - Sao Paulo)</option>
-        </select>
-      </div>
-
       <div class="form-group">
         <label>Nome do documento</label>
-        <input type="text" id="f-name" placeholder="Ex: E-ticket LATAM, Voucher Laguna Colorada..." required />
+        <input type="text" id="f-name" placeholder="Ex: E-ticket LATAM GRU-SCL" required />
       </div>
-
       <div class="form-group">
-        <label>Data (dia da viagem)</label>
-        <div class="date-scroll" id="date-scroll"></div>
+        <label>Data (opcional)</label>
+        <input type="date" id="f-date" min="2026-08-01" max="2026-08-31" />
       </div>
-
-      <div class="form-group" id="notes-group">
-        <label>Observacoes (opcional)</label>
-        <textarea id="f-notes" rows="2" placeholder="Horario, ponto de encontro, detalhes..." style="resize:none;"></textarea>
+      <div class="form-group">
+        <label>Observações (opcional)</label>
+        <textarea id="f-notes" rows="2" placeholder="Horário, número da reserva, detalhes..." style="resize:none;"></textarea>
       </div>
-
       <div class="form-group">
         <label>Arquivo (PDF ou imagem)</label>
         <div class="upload-area" id="upload-area">
@@ -574,7 +289,6 @@
           </div>
         </div>
       </div>
-
       <button type="submit" class="btn-primary">Salvar</button>
       <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
     </form>
@@ -584,7 +298,7 @@
 <!-- PDF/IMAGE VIEWER -->
 <div class="viewer-overlay" id="viewer-overlay">
   <div class="viewer-header">
-    <button class="close-btn" onclick="closeViewer()">X</button>
+    <button class="close-btn" onclick="closeViewer()">×</button>
     <div class="viewer-title" id="viewer-title"></div>
   </div>
   <iframe id="pdf-frame" style="display:none;"></iframe>
@@ -596,80 +310,475 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- DB SETUP ----
-const DB_NAME = 'atacama2025';
-const DB_VERSION = 1;
+/* =========================================================================
+   DADOS DA VIAGEM — extraídos dos vouchers Civitatis, apólices GTA/IZA e
+   informações do usuário. Datas reais dos vouchers: agosto de 2026.
+   ========================================================================= */
+
+const HOTEL = {
+  name: 'San Pedro Domos',
+  address: 'Domingo Atienza 294B, 1410000, San Pedro de Atacama, Chile',
+  phone: '+56 9 9311 4509'
+};
+
+const EMERGENCY = {
+  seguradora: 'GTA (Global Travel Assistance) / IZA Seguradora',
+  whatsapp: '+1 305 404 2167',
+  whatsappLink: 'https://wa.me/13054042167',
+  note: 'Se estiver viajando para os EUA (conexão), entre em contato ANTES de ir a uma clínica ou hospital.'
+};
+
+// ---- SEGUROS (Documentos) ----
+const INSURANCES = [
+  {
+    id: 'seguro-enzo',
+    nome: 'Enzo Landini',
+    documento: '462.215.568-05',
+    nascimento: '30/01/1998',
+    voucher: '10404085',
+    bilhete: '11830746',
+    linkVoucher: 'http://www.vouchergta.me/11830746ENZ',
+    plano: '11110 · LATAM MAX EM DOBRO',
+    destino: 'América Latina (incluso México)',
+    vigenciaIni: '09/08/2026',
+    vigenciaFim: '18/08/2026',
+    valorPago: 'R$ 105,17 (prêmio) + R$ 0,40 (IOF)',
+    file: 'assets/documentos/seguro-enzo.pdf',
+    coberturas: [
+      ['Despesas médicas/hospitalares no exterior (inclui Covid-19)', 'US$ 160.000'],
+      ['Despesas odontológicas', 'US$ 800'],
+      ['Despesas farmacêuticas', 'US$ 800'],
+      ['Traslado médico', 'US$ 20.000'],
+      ['Despesas jurídicas', 'US$ 1.000'],
+      ['Fiança e despesas legais', 'US$ 7.500'],
+      ['Interrupção de viagem', 'US$ 920'],
+      ['Danos à mala', 'US$ 130'],
+      ['Atraso de bagagem (6h)', 'US$ 250'],
+      ['Perda de bagagem', 'US$ 1.200'],
+      ['Cancelamento de viagem', 'US$ 1.000'],
+      ['Regresso sanitário', 'US$ 40.000'],
+      ['Traslado de corpo', 'US$ 40.000'],
+      ['Retorno de menores/idosos', 'US$ 1.500'],
+      ['Acompanhante em hospitalização prolongada', 'US$ 2.000'],
+      ['Prorrogação de estadia', 'US$ 2.000'],
+      ['Retorno antecipado do segurado', 'US$ 1.500'],
+      ['Atraso de voo (6h)', 'US$ 250'],
+      ['Invalidez permanente (acidente)', 'US$ 12.000'],
+      ['Morte acidental em viagem', 'US$ 12.000']
+    ]
+  },
+  {
+    id: 'seguro-esther',
+    nome: 'Esther Arraz Moyses Landini',
+    documento: '464.006.698-84',
+    nascimento: '12/01/1999',
+    voucher: '10404086',
+    bilhete: '11830747',
+    linkVoucher: 'http://www.vouchergta.me/11830747EST',
+    plano: '11110 · LATAM MAX EM DOBRO',
+    destino: 'América Latina (incluso México)',
+    vigenciaIni: '09/08/2026',
+    vigenciaFim: '18/08/2026',
+    valorPago: 'R$ 73,62 (prêmio) + R$ 0,28 (IOF)',
+    file: 'assets/documentos/seguro-esther.pdf',
+    coberturas: [
+      ['Despesas médicas/hospitalares no exterior (inclui Covid-19)', 'US$ 160.000'],
+      ['Cuidado dental', 'US$ 800'],
+      ['Gastos farmacêuticos', 'US$ 800'],
+      ['Transferência médica', 'US$ 20.000'],
+      ['Assistência legal', 'US$ 1.000'],
+      ['Assistência de garantia judicial', 'US$ 7.500'],
+      ['Interrupção de viagem', 'US$ 920'],
+      ['Reembolso de maletas danificadas', 'US$ 130'],
+      ['Reembolso por demora de equipagem (6h)', 'US$ 250'],
+      ['Seguro de equipagem', 'US$ 1.200'],
+      ['Cancelamento de viagem', 'US$ 1.000'],
+      ['Repatriação sanitária', 'US$ 40.000'],
+      ['Repatriação por morte', 'US$ 40.000'],
+      ['Repatriação de menores/idosos', 'US$ 1.500'],
+      ['Acompanhamento familiar', 'US$ 2.000'],
+      ['Extensão de estadia', 'US$ 2.000'],
+      ['Regresso antecipado', 'US$ 1.500'],
+      ['Atraso de voo (6h)', 'US$ 250'],
+      ['Seguro de morte acidental', 'US$ 12.000'],
+      ['Seguro para incapacidade permanente', 'US$ 12.000']
+    ]
+  }
+];
+
+const TELEMEDICINE = {
+  id: 'telemedicina',
+  titulo: 'Telemedicina · Scan Facial (GTA)',
+  desc: 'Serviço de telemedicina 24h incluso no seguro GTA: atendimento por vídeo, segunda opinião médica e leitura de sinais vitais por scan facial (IA) direto pelo celular, sem precisar ir a um hospital.',
+  passos: [
+    'Contate o WhatsApp de emergência para iniciar o atendimento',
+    'Você recebe um link para o SCAN FACIAL',
+    'Faça o scan em local bem iluminado, sem óculos/boné, rosto centralizado no círculo, parado e em silêncio, pelo celular',
+    'O médico avalia os sinais vitais (batimentos, pressão, respiração, estresse, HRV) e conduz o atendimento',
+    'Se precisar, a GTA encaminha para médico presencial, especialista, exames ou ambulância'
+  ],
+  file: 'assets/documentos/telemedicina.pdf'
+};
+
+// ---- PASSEIOS (vouchers Civitatis + transfer) ----
+const TOURS = [
+  {
+    id: 'transfer-ida',
+    date: '2026-08-10',
+    title: 'Transfer Aeroporto de Calama → San Pedro de Atacama',
+    subtitle: 'Ida · Transfer Pampa',
+    type: 'transfer',
+    time: '07:09',
+    timeLabel: 'Chegada do voo LATAM LA142 em Calama',
+    duration: 'Trajeto de aprox. 1h30 até San Pedro de Atacama',
+    provider: 'Transfer Pampa',
+    providerPhone: '+56 9 5226 0720',
+    reserva: 'A39201353',
+    price: 'R$ 446,21 (CL$ 75.000) · 2 pessoas',
+    meetingPoint: 'Balcão da Transfer Pampa, no terminal de chegadas do Aeroporto de Calama (após retirar a bagagem)',
+    notes: [
+      'O fornecedor entra em contato para confirmar o horário exato de retirada',
+      'Tempo máximo de espera no aeroporto: 35 minutos',
+      'Pode levar 1 mala grande + 1 bagagem de mão por pessoa (dimensões padrão das companhias aéreas)',
+      'Destino: San Pedro Domos, Domingo Atienza 294B'
+    ],
+    cancelation: 'Reembolso total até 23:59 de 06/08 (hora Calama) · 50% até 23:59 de 08/08 · sem reembolso depois disso.',
+    voucher: 'assets/passeios/10-08-transfer.pdf',
+    items: ['Documento de identificação / passaporte', 'Comprovante do voucher (impresso ou no celular)', 'Mala grande + bagagem de mão', 'Celular carregado (contato do fornecedor)']
+  },
+  {
+    id: 'valle-de-la-luna',
+    date: '2026-08-11',
+    title: 'Excursão ao Valle de la Luna',
+    subtitle: 'Tour sem retirada de ingresso',
+    type: 'tour',
+    time: '15:30',
+    timeLabel: 'Apresentar-se 10 min antes (15:20)',
+    duration: 'Aprox. 4h · retorno estimado ~19:30 (pôr do sol)',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A38683285',
+    price: 'R$ 513,12 (CL$ 86.000) · 2 pessoas',
+    meetingPoint: 'Escritório Atacama Extrema — Calle Tocopilla 429 B, Local 2, San Pedro de Atacama',
+    notes: [
+      'Ingresso do Valle de la Luna NÃO está incluído — comprar antes em valledelaluna.com (~R$ 60,50/pessoa)',
+      'Não inclui almoço',
+      'Guia fala português e espanhol',
+      'Recomendado: roupa confortável para trilha, sapato fechado, jaqueta corta-vento, protetor solar'
+    ],
+    cancelation: 'Reembolso total até 15:30 de 09/08 (hora San Pedro) · sem reembolso depois disso.',
+    voucher: 'assets/passeios/11-08-valle-de-la-luna.pdf',
+    items: ['Ingresso do Valle de la Luna (comprado antecipadamente)', 'Roupa confortável para trilha', 'Sapato fechado', 'Jaqueta corta-vento', 'Protetor solar', '1 litro de água por pessoa']
+  },
+  {
+    id: 'vale-arco-iris',
+    date: '2026-08-12',
+    title: 'Excursão ao Vale do Arco-íris',
+    subtitle: 'Tour em português',
+    type: 'tour',
+    time: '07:00',
+    timeLabel: 'Retirada entre 07:00–07:40 no hotel',
+    duration: 'Aprox. 7-8h · retorno estimado ~14:30-15:00',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A38683286',
+    price: 'R$ 536,98 (CL$ 90.000) · 2 pessoas',
+    meetingPoint: 'Retirada no hotel (San Pedro Domos) — raio de 5 km do centro',
+    notes: [
+      'Horários sujeitos a alteração por condições climáticas',
+      'Guia fala português, espanhol e inglês',
+      'Não esquecer 1 litro de água por pessoa, roupa em camadas e sapatos fechados'
+    ],
+    cancelation: 'Reembolso total até 07:00 de 11/08 (hora San Pedro) · sem reembolso depois disso. Atividade requer mínimo de 5 participantes.',
+    voucher: 'assets/passeios/12-08-vale-do-arco-iris.pdf',
+    items: ['1 litro de água por pessoa', 'Agasalho em camadas', 'Sapato fechado', 'Protetor solar', 'Óculos de sol']
+  },
+  {
+    id: 'observacao-estrelas',
+    date: '2026-08-12',
+    title: 'Observação de estrelas no deserto de Atacama',
+    subtitle: 'Passeio astronômico',
+    type: 'tour',
+    time: '21:45',
+    timeLabel: 'Retirada no hotel às 21:45',
+    duration: 'Aprox. 2h30 · retorno estimado ~00:15',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A38683287',
+    price: 'R$ 477,32 (CL$ 80.000) · 2 pessoas',
+    meetingPoint: 'Retirada no hotel indicado na reserva (San Pedro Domos)',
+    notes: [
+      'Estar pronto com alguns minutos de antecedência',
+      'Guia fala português e outro idioma',
+      'Noite no deserto é bem fria — levar casaco bem quente'
+    ],
+    cancelation: 'Reembolso total até 21:45 de 10/08 (hora San Pedro) · sem reembolso depois disso.',
+    voucher: 'assets/passeios/12-08-observacao-de-estrelas.pdf',
+    items: ['Casaco bem quente (temperatura cai muito à noite)', 'Gorro e luvas', 'Celular/câmera para fotos (opcional)']
+  },
+  {
+    id: 'lagoa-cejar',
+    date: '2026-08-13',
+    title: 'Excursão à lagoa Cejar, Tebenquiche e Ojos del Salar',
+    subtitle: 'Tour em português',
+    type: 'tour',
+    time: '14:00',
+    timeLabel: 'Apresentar-se 10 min antes (13:50)',
+    duration: 'Aprox. 6h · retorno estimado ~20:00 (após o pôr do sol)',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A39201354',
+    price: 'R$ 535,45 (CL$ 90.000) · 2 pessoas',
+    meetingPoint: 'Escritório Atacama Extrema — Calle Tocopilla 429 B, Local 2, San Pedro de Atacama',
+    notes: [
+      'Imprescindível ter celular com internet para contato do fornecedor',
+      'Levar roupa leve e de frio para o entardecer, roupa de banho e toalha (banho na lagoa)',
+      'Guia fala português, espanhol e inglês'
+    ],
+    cancelation: 'Reembolso total até 14:00 de 12/08 (hora San Pedro) · sem reembolso depois disso.',
+    voucher: 'assets/passeios/13-08-lagoa-cejar-tebenquiche-ojos-del-salar.pdf',
+    items: ['Roupa de banho', 'Toalha', 'Roupa leve + casaco para o entardecer', '1 litro de água por pessoa', 'Celular com internet']
+  },
+  {
+    id: 'el-tatio',
+    date: '2026-08-14',
+    title: 'Excursão aos gêiseres de El Tatio',
+    subtitle: 'Tour em português com ingresso',
+    type: 'tour',
+    time: '05:00',
+    timeLabel: 'Retirada entre 04:30–05:10 (confirmado na véspera)',
+    duration: 'Aprox. 8h · retorno estimado ~13:00',
+    provider: 'LC Turismo',
+    providerPhone: '+55 11 92061 9246',
+    reserva: 'A39201355',
+    price: 'R$ 750,00 · 2 pessoas',
+    meetingPoint: 'Retirada no hotel (San Pedro Domos) — raio de até 5 km do centro',
+    notes: [
+      'Temperaturas negativas nos gêiseres: usar roupas agasalhadas em 3 camadas de casaco + 2 de calça',
+      'Inclui parada no Bofedal de Putana e café da manhã (pães, queijos, frios, abacate, leite e café)',
+      'Não recomendado para gestantes (salvo liberação médica) e idosos com mobilidade reduzida',
+      'Transfer de volta deixa na Plazoleta La Apacheta, Calle Caracoles'
+    ],
+    cancelation: 'Reembolso total até 05:00 de 13/08 (hora San Pedro) · sem reembolso depois disso. Atividade requer mínimo de 5 participantes.',
+    voucher: 'assets/passeios/14-08-geiseres-el-tatio.pdf',
+    items: ['3 camadas de casaco', '2 camadas de calça', 'Meia térmica', 'Gorro, luva e cachecol', 'Sapato fechado', 'Óculos de sol', 'Protetor solar e labial', 'Soro fisiológico nasal', '1 litro de água por pessoa']
+  },
+  {
+    id: 'piedras-rojas',
+    date: '2026-08-15',
+    title: 'Piedras Rojas, Salar de Atacama e lagos do altiplano',
+    subtitle: 'Tour em português · dia inteiro',
+    type: 'tour',
+    time: '06:00',
+    timeLabel: 'Retirada entre 06:00–06:40',
+    duration: 'Aprox. 11-12h · retorno estimado ~18:00',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A39776782',
+    price: 'R$ 841,63 (CL$ 140.000) · 2 pessoas',
+    meetingPoint: 'Retirada no hotel (San Pedro Domos) — raio de 5 km do centro',
+    notes: [
+      'Ingressos NÃO incluídos — pagar em pesos chilenos, em dinheiro, no dia do tour',
+      'Recomendado não ter nenhum voo nesse dia (tour extenso e sujeito ao clima)',
+      'Pode não ser possível visitar a lagoa de Chaxa por restrição de capacidade',
+      'Roupas em camadas, sapato fechado, protetor solar, 1L de água por pessoa'
+    ],
+    cancelation: 'Reembolso total até 06:00 de 14/08 (hora San Pedro) · sem reembolso depois disso. Atividade requer mínimo de 5 participantes.',
+    voucher: 'assets/passeios/15-08-piedras-rojas.pdf',
+    items: ['Dinheiro em pesos chilenos (ingressos pagos no local)', 'Roupas em camadas', 'Sapato fechado', 'Protetor solar', 'Óculos de sol', '1 litro de água por pessoa']
+  },
+  {
+    id: 'rota-salares',
+    date: '2026-08-16',
+    title: 'Rota dos Salares (Licancabur, Salar, Aguas Calientes, Quisquiro)',
+    subtitle: 'Tour em português',
+    type: 'tour',
+    time: '07:30',
+    timeLabel: 'Retirada entre 07:00–07:40 (maio a setembro)',
+    duration: 'Aprox. 9-10h · retorno estimado ~17:00',
+    provider: 'Atacama Extrema SPA (Caren)',
+    providerPhone: '+56 9 8483 3427 (WhatsApp)',
+    reserva: 'A39776783',
+    price: 'R$ 781,52 (CL$ 130.000) · 2 pessoas',
+    meetingPoint: 'Retirada no hotel (San Pedro Domos) — raio de 5 km do centro',
+    notes: [
+      'Roupas quentes, calçados confortáveis, protetor solar, óculos de sol',
+      'Guia fala português, espanhol e inglês',
+      'Sujeito a alterações por condições climáticas'
+    ],
+    cancelation: 'Reembolso total até 07:30 de 15/08 (hora San Pedro) · sem reembolso depois disso. Atividade requer mínimo de 5 participantes.',
+    voucher: 'assets/passeios/16-08-rota-dos-salares.pdf',
+    items: ['Roupas quentes', 'Calçados confortáveis', 'Protetor solar', 'Óculos de sol', '1 litro de água por pessoa']
+  },
+  {
+    id: 'transfer-volta',
+    date: '2026-08-17',
+    title: 'Transfer San Pedro de Atacama → Aeroporto de Calama',
+    subtitle: 'Volta · Transfer Pampa',
+    type: 'transfer',
+    time: '~18:00',
+    timeLabel: 'Horário exato avisado pelo fornecedor (aprox. 2h antes do voo)',
+    duration: 'Trajeto de aprox. 1h30',
+    provider: 'Transfer Pampa',
+    providerPhone: '+56 9 5226 0720',
+    reserva: 'A39201353',
+    price: 'incluso na reserva de ida (voucher único, ida e volta)',
+    meetingPoint: 'Retirada no hotel San Pedro Domos — esteja pronto alguns minutos antes',
+    notes: [
+      'Voo de volta: LATAM LA375, saída de Calama às 19:53',
+      'Não são feitas retiradas em cidades vizinhas (Ayllus, Solor, Cucuter, Toconao)',
+      'Pode levar 1 mala grande + 1 bagagem de mão por pessoa'
+    ],
+    cancelation: 'Mesmas condições do voucher de ida (reserva única A39201353).',
+    voucher: 'assets/passeios/10-08-transfer.pdf',
+    items: ['Malas prontas', 'Documentos e comprovantes de viagem', 'Conferir se não esqueceu nada no hotel']
+  }
+];
+
+// ---- CRONOGRAMA — agenda dia a dia (blocos fixos + tempo livre) ----
+// type: voo | transfer | tour | livre | hotel
+const SCHEDULE = [
+  {
+    date: '2026-08-09', label: 'Domingo, 9 de agosto',
+    blocks: [
+      { time: '—', end: '23:00', type: 'livre', title: 'Dia livre no Brasil', sub: 'Últimos preparativos, malas e check-in online' },
+      { time: '23:00', end: '', type: 'voo', title: 'Embarque · Voo internacional', sub: 'Saída do Brasil rumo ao Chile (conferir dados da passagem aérea)' }
+    ]
+  },
+  {
+    date: '2026-08-10', label: 'Segunda, 10 de agosto',
+    blocks: [
+      { time: '07:09', end: '', type: 'voo', title: 'Chegada em Calama', sub: 'Voo LATAM LA142' },
+      { time: '07:09', end: '~09:00', type: 'transfer', title: 'Transfer Aeroporto Calama → San Pedro de Atacama', sub: 'Transfer Pampa · reserva A39201353', link: 'transfer-ida' },
+      { time: '~09:00', end: '23:00', type: 'livre', title: 'Aclimatação e descanso', sub: 'Check-in no San Pedro Domos, hidratação e ritmo tranquilo (altitude ~2.400m) — resto do dia livre' }
+    ]
+  },
+  {
+    date: '2026-08-11', label: 'Terça, 11 de agosto',
+    blocks: [
+      { time: '—', end: '15:20', type: 'livre', title: 'Manhã livre', sub: 'Aproveite para comprar o ingresso do Valle de la Luna online e conhecer o centrinho de San Pedro' },
+      { time: '15:20', end: '15:30', type: 'tour', title: 'Apresentar-se · Atacama Extrema', sub: 'Calle Tocopilla 429 B, Local 2', link: 'valle-de-la-luna' },
+      { time: '15:30', end: '~19:30', type: 'tour', title: 'Excursão ao Valle de la Luna', sub: 'Reserva A38683285', link: 'valle-de-la-luna' },
+      { time: '~19:30', end: '23:00', type: 'livre', title: 'Noite livre', sub: 'Jantar em San Pedro' }
+    ]
+  },
+  {
+    date: '2026-08-12', label: 'Quarta, 12 de agosto',
+    blocks: [
+      { time: '06:50', end: '07:00', type: 'tour', title: 'Aguardar retirada no hotel', sub: 'Janela de retirada 07:00–07:40', link: 'vale-arco-iris' },
+      { time: '07:00', end: '~15:00', type: 'tour', title: 'Excursão ao Vale do Arco-íris', sub: 'Reserva A38683286', link: 'vale-arco-iris' },
+      { time: '~15:00', end: '21:35', type: 'livre', title: 'Tarde livre', sub: 'Descanso — dia longo pela manhã e observação de estrelas à noite' },
+      { time: '21:35', end: '21:45', type: 'tour', title: 'Aguardar retirada no hotel', sub: 'Observação de estrelas', link: 'observacao-estrelas' },
+      { time: '21:45', end: '~00:15', type: 'tour', title: 'Observação de estrelas no deserto', sub: 'Reserva A38683287', link: 'observacao-estrelas' }
+    ]
+  },
+  {
+    date: '2026-08-13', label: 'Quinta, 13 de agosto',
+    blocks: [
+      { time: '—', end: '13:50', type: 'livre', title: 'Manhã livre', sub: 'Descanso após a noite anterior' },
+      { time: '13:50', end: '14:00', type: 'tour', title: 'Apresentar-se · Atacama Extrema', sub: 'Calle Tocopilla 429 B, Local 2', link: 'lagoa-cejar' },
+      { time: '14:00', end: '~20:00', type: 'tour', title: 'Lagoa Cejar, Tebenquiche e Ojos del Salar', sub: 'Reserva A39201354 · banho nas lagoas + pôr do sol', link: 'lagoa-cejar' },
+      { time: '~20:00', end: '23:00', type: 'livre', title: 'Noite livre', sub: 'Jantar — amanhã acorda muito cedo para El Tatio' }
+    ]
+  },
+  {
+    date: '2026-08-14', label: 'Sexta, 14 de agosto',
+    blocks: [
+      { time: '04:30', end: '05:10', type: 'tour', title: 'Retirada no hotel · El Tatio', sub: 'Horário exato confirmado na véspera', link: 'el-tatio' },
+      { time: '05:00', end: '~13:00', type: 'tour', title: 'Excursão aos gêiseres de El Tatio', sub: 'Reserva A39201355 · inclui café da manhã', link: 'el-tatio' },
+      { time: '~13:00', end: '23:00', type: 'livre', title: 'Tarde e noite livres', sub: 'Descanso — amanhã é o tour mais longo (Piedras Rojas)' }
+    ]
+  },
+  {
+    date: '2026-08-15', label: 'Sábado, 15 de agosto',
+    blocks: [
+      { time: '06:00', end: '06:40', type: 'tour', title: 'Retirada no hotel · Piedras Rojas', sub: 'Janela de retirada 06:00–06:40', link: 'piedras-rojas' },
+      { time: '06:00', end: '~18:00', type: 'tour', title: 'Piedras Rojas, Salar de Atacama e lagos do altiplano', sub: 'Reserva A39776782 · tour de dia inteiro', link: 'piedras-rojas' },
+      { time: '~18:00', end: '23:00', type: 'livre', title: 'Noite livre', sub: 'Jantar tranquilo' }
+    ]
+  },
+  {
+    date: '2026-08-16', label: 'Domingo, 16 de agosto',
+    blocks: [
+      { time: '07:00', end: '07:40', type: 'tour', title: 'Retirada no hotel · Rota dos Salares', sub: 'Janela de retirada 07:00–07:40', link: 'rota-salares' },
+      { time: '07:30', end: '~17:00', type: 'tour', title: 'Rota dos Salares', sub: 'Reserva A39776783', link: 'rota-salares' },
+      { time: '~17:00', end: '23:00', type: 'livre', title: 'Última noite livre', sub: 'Jantar de despedida e arrumar as malas para o voo de amanhã' }
+    ]
+  },
+  {
+    date: '2026-08-17', label: 'Segunda, 17 de agosto',
+    blocks: [
+      { time: '—', end: '~16:00', type: 'livre', title: 'Manhã e início da tarde livres', sub: 'Check-out do hotel, últimas compras/passeio pelo centro' },
+      { time: '~16:00', end: '~18:00', type: 'transfer', title: 'Transfer San Pedro de Atacama → Aeroporto de Calama', sub: 'Transfer Pampa · reserva A39201353', link: 'transfer-volta' },
+      { time: '19:53', end: '', type: 'voo', title: 'Voo de volta', sub: 'LATAM LA375 saindo de Calama · retorno ao Brasil' }
+    ]
+  }
+];
+
+// ---- ITENS GERAIS (não ligados a um passeio específico) ----
+const GENERAL_ITEMS = [
+  'Passaporte / RG e CPF',
+  'Voucher do seguro viagem (impresso ou no celular) — Enzo e Esther',
+  'Cartões de crédito internacionais + dinheiro em pesos chilenos',
+  'Adaptador de tomada (Chile: tipo C/L, 220V)',
+  'Protetor solar de FPS alto (altitude forte no deserto)',
+  'Óculos de sol e chapéu/boné',
+  'Roupas em camadas — frio intenso à noite, calor seco de dia',
+  'Casaco bem quente para as noites no deserto',
+  'Remédios de uso pessoal + analgésico para dor de cabeça (altitude)',
+  'Garrafa de água reutilizável',
+  'Carregador portátil / power bank',
+  'Print ou foto dos vouchers de todos os passeios'
+];
+
+/* ========================================================================= */
+
+let currentTab = 'cronograma';
 let db;
-
-const TRIP_DAYS = [];
-const start = new Date(2025, 7, 9); // Aug 9
-for (let i = 0; i < 9; i++) {
-  const d = new Date(start);
-  d.setDate(start.getDate() + i);
-  TRIP_DAYS.push(d);
-}
-
-const DAY_NAMES = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
-const MONTH_NAMES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-
-function formatDate(d) {
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-function formatDateKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function formatDateFull(d) {
-  return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} de ${MONTH_NAMES[d.getMonth()]}`;
-}
+const DB_NAME = 'atacama2026';
+const DB_VERSION = 1;
 
 function openDB() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = e => {
       const d = e.target.result;
-      if (!d.objectStoreNames.contains('docs')) {
-        const store = d.createObjectStore('docs', { keyPath: 'id', autoIncrement: true });
+      if (!d.objectStoreNames.contains('extra')) {
+        const store = d.createObjectStore('extra', { keyPath: 'id', autoIncrement: true });
         store.createIndex('category', 'category', { unique: false });
-        store.createIndex('dateKey', 'dateKey', { unique: false });
       }
     };
     req.onsuccess = e => { db = e.target.result; resolve(db); };
     req.onerror = e => reject(e);
   });
 }
-
 function dbGetAll() {
   return new Promise((resolve, reject) => {
-    const tx = db.transaction('docs', 'readonly');
-    const req = tx.objectStore('docs').getAll();
+    const tx = db.transaction('extra', 'readonly');
+    const req = tx.objectStore('extra').getAll();
     req.onsuccess = e => resolve(e.target.result);
     req.onerror = e => reject(e);
   });
 }
 function dbAdd(doc) {
   return new Promise((resolve, reject) => {
-    const tx = db.transaction('docs', 'readwrite');
-    const req = tx.objectStore('docs').add(doc);
+    const tx = db.transaction('extra', 'readwrite');
+    const req = tx.objectStore('extra').add(doc);
     req.onsuccess = e => resolve(e.target.result);
     req.onerror = e => reject(e);
   });
 }
 function dbDelete(id) {
   return new Promise((resolve, reject) => {
-    const tx = db.transaction('docs', 'readwrite');
-    const req = tx.objectStore('docs').delete(id);
+    const tx = db.transaction('extra', 'readwrite');
+    const req = tx.objectStore('extra').delete(id);
     req.onsuccess = () => resolve();
     req.onerror = e => reject(e);
   });
 }
 
-// ---- STATE ----
-let currentTab = 'all';
-let selectedDateKey = null;
-let allDocs = [];
-let pendingFile = null;
+let extraDocs = [];
 
-// ---- UI HELPERS ----
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -677,147 +786,355 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function categoryLabel(c) {
-  return { passagens: 'Passagem', passeios: 'Passeio', seguro: 'Seguro', hospedagem: 'Hospedagem', transfer: 'Transfer' }[c] || c;
-}
-function categoryIcon(c) {
-  return { passagens: 'plane-icon', passeios: 'binoculars-icon', seguro: 'shield-icon' }[c] || '';
-}
-function categoryIconText(c) {
-  return { passagens: 'P', passeios: 'T', seguro: 'S', hospedagem: 'H', transfer: 'Tr' }[c] || '?';
-}
-
-function flightLabel(code) {
-  const map = {
-    'GRU-SCL': 'GRU -> SCL',
-    'SCL-CJC': 'SCL -> CJC',
-    'CJC-SCL': 'CJC -> SCL',
-    'SCL-GRU': 'SCL -> GRU'
-  };
-  return map[code] || code;
-}
-
-// ---- RENDER ----
-async function render() {
-  allDocs = await dbGetAll();
-  const container = document.getElementById('main');
-
-  let filtered = allDocs;
-  if (currentTab !== 'all') filtered = allDocs.filter(d => d.category === currentTab);
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">---</div>
-        <p>Nenhum documento ainda.<br>Toque em + para adicionar.</p>
-      </div>`;
-    return;
+function updateCountdown() {
+  const today = new Date();
+  const start = new Date(2026, 7, 9);
+  const end = new Date(2026, 7, 17);
+  const el = document.getElementById('countdown');
+  const diffStart = Math.ceil((start - today) / 86400000);
+  if (diffStart > 0) {
+    el.textContent = `Faltam ${diffStart} dia${diffStart === 1 ? '' : 's'}`;
+  } else if (today <= end) {
+    el.textContent = 'Estamos na viagem!';
+  } else {
+    el.textContent = 'Viagem concluída';
   }
-
-  // Group by date
-  const groups = {};
-  TRIP_DAYS.forEach(d => { groups[formatDateKey(d)] = []; });
-  // Extra bucket for docs without date or outside range
-  filtered.forEach(doc => {
-    if (groups[doc.dateKey] !== undefined) {
-      groups[doc.dateKey].push(doc);
-    } else {
-      if (!groups['__other']) groups['__other'] = [];
-      groups['__other'].push(doc);
-    }
-  });
-
-  let html = '';
-  const keys = Object.keys(groups);
-  for (const key of keys) {
-    const docs = groups[key];
-    if (docs.length === 0) continue;
-
-    const dateObj = key === '__other' ? null : TRIP_DAYS.find(d => formatDateKey(d) === key);
-    const dayLabel = dateObj ? formatDateFull(dateObj) : 'Outros';
-
-    html += `<div class="day-group">`;
-    html += `<div class="day-label">${dayLabel}</div>`;
-    docs.forEach(doc => {
-      html += renderCard(doc);
-    });
-    html += `</div>`;
-  }
-
-  container.innerHTML = html;
 }
 
-function renderCard(doc) {
-  const isPdf = doc.fileType && doc.fileType.includes('pdf');
-  const hasFile = !!doc.fileData;
-  const flight = doc.flightCode ? `<span class="flight-info">${flightLabel(doc.flightCode)}</span>` : '';
-  const notes = doc.notes ? `<span style="color:var(--text2);font-size:0.72rem;">${doc.notes}</span>` : '';
-  const fileInfo = hasFile ? `<span>${isPdf ? 'PDF' : 'Imagem'}</span>` : `<span style="opacity:0.5">Sem arquivo</span>`;
-
-  return `
-    <div class="doc-card" data-category="${doc.category}" data-id="${doc.id}">
-      <div class="doc-card-inner" onclick="toggleCardActions(${doc.id})">
-        <div class="doc-icon">${categoryIconText(doc.category)}</div>
-        <div class="doc-info">
-          <div class="doc-name">${doc.name}</div>
-          <div class="doc-meta">
-            <span class="doc-badge">${categoryLabel(doc.category)}</span>
-            ${fileInfo}
-          </div>
-          ${flight}
-          ${notes}
-        </div>
-      </div>
-      <div class="doc-actions" id="actions-${doc.id}" style="display:none;">
-        ${hasFile ? `<button class="btn-sm btn-view" onclick="viewDoc(${doc.id})">Ver arquivo</button>` : ''}
-        <button class="btn-sm btn-delete" onclick="deleteDoc(${doc.id})">Excluir</button>
-      </div>
-    </div>`;
-}
-
-function toggleCardActions(id) {
-  const el = document.getElementById(`actions-${id}`);
-  if (!el) return;
-  const isOpen = el.style.display !== 'none';
-  // Close all others
-  document.querySelectorAll('[id^="actions-"]').forEach(a => a.style.display = 'none');
-  if (!isOpen) el.style.display = 'flex';
-}
-
-// ---- TABS ----
 function setTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('fab').style.display = (tab === 'documentos' || tab === 'passeios') ? 'flex' : 'none';
   render();
 }
 
-function goBack() {
-  setTab('all');
+function onFabClick() {
+  if (currentTab === 'documentos') openAddModal('documentos');
+  else if (currentTab === 'passeios') openAddModal('passeios');
 }
 
-// ---- ADD MODAL ----
-let selectedFormDate = formatDateKey(TRIP_DAYS[0]);
+function findTour(id) { return TOURS.find(t => t.id === id); }
 
-function buildDateScroll() {
-  const container = document.getElementById('date-scroll');
-  container.innerHTML = TRIP_DAYS.map(d => {
-    const key = formatDateKey(d);
-    const sel = key === selectedFormDate ? 'selected' : '';
-    return `<div class="date-chip ${sel}" onclick="selectFormDate('${key}', this)">${formatDate(d)} ${DAY_NAMES[d.getDay()]}</div>`;
-  }).join('');
+function fmtDateLong(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  return `${dias[dt.getDay()]}, ${d} de ${meses[m-1]}`;
 }
 
-function selectFormDate(key, el) {
-  selectedFormDate = key;
-  document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
+/* ---------------- RENDER: MASTER ---------------- */
+function render() {
+  const main = document.getElementById('main');
+  if (currentTab === 'cronograma') main.innerHTML = renderCronograma();
+  else if (currentTab === 'documentos') main.innerHTML = renderDocumentos();
+  else if (currentTab === 'passeios') main.innerHTML = renderPasseios();
+  else if (currentTab === 'itens') main.innerHTML = renderItens();
+  if (currentTab === 'itens') attachChecklistHandlers();
 }
 
-function onCategoryChange() {
-  const cat = document.getElementById('f-category').value;
-  document.getElementById('flight-selector-group').style.display = cat === 'passagens' ? '' : 'none';
+/* ---------------- CRONOGRAMA ---------------- */
+function blockIcon(type) {
+  return { voo: '✈', transfer: '🚐', tour: '🧭', livre: '☕', hotel: '🏨' }[type] || '•';
 }
+function renderCronograma() {
+  let html = `<div class="intro-banner"><b>Roteiro completo</b> de 9 a 17 de agosto — horários de retirada, duração estimada de cada passeio e os intervalos livres entre eles. Horários marcados com "~" são estimativas de duração (os fornecedores confirmam o horário exato de retirada na véspera).</div>`;
+  SCHEDULE.forEach(day => {
+    html += `<div class="day-group">`;
+    html += `<div class="day-label"><span class="day-num">${day.date.slice(-2)}/08</span> ${day.label}</div>`;
+    day.blocks.forEach(b => {
+      const timeRange = b.end ? `${b.time} – ${b.end}` : b.time;
+      if (b.type === 'livre') {
+        html += `
+          <div class="free-block">
+            <div class="card-icon">${blockIcon(b.type)}</div>
+            <div style="flex:1;">
+              <div class="card-title">${b.title}</div>
+              <div class="card-sub">${b.sub || ''}</div>
+            </div>
+            <div class="card-time">${timeRange}</div>
+          </div>`;
+      } else {
+        const cls = b.type === 'transfer' ? 'c-transfer' : (b.type === 'voo' ? 'c-transfer' : 'c-tour');
+        html += `
+          <div class="card ${cls}" ${b.link ? `onclick="setTabAndOpenTour('${b.link}')" style="cursor:pointer;"` : ''}>
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-icon">${blockIcon(b.type)}</div>
+                <div style="flex:1;">
+                  <div class="card-title">${b.title}</div>
+                  <div class="card-sub">${b.sub || ''}</div>
+                </div>
+                <div class="card-time">${timeRange}</div>
+              </div>
+            </div>
+          </div>`;
+      }
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+function setTabAndOpenTour(tourId) {
+  setTab('passeios');
+  setTimeout(() => {
+    const el = document.getElementById('tour-' + tourId);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('highlight'); }
+  }, 80);
+}
+
+/* ---------------- DOCUMENTOS ---------------- */
+function renderDocumentos() {
+  let html = `<div class="section-header">Seguro viagem</div>`;
+  INSURANCES.forEach(ins => {
+    html += `
+      <div class="card c-insurance">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">🛡</div>
+            <div style="flex:1;">
+              <div class="card-title">${ins.nome}</div>
+              <div class="card-sub">${ins.plano} · válido ${ins.vigenciaIni} a ${ins.vigenciaFim}</div>
+            </div>
+          </div>
+          <div class="card-detail-list">
+            <div><b>Documento:</b> ${ins.documento} · <b>Nasc.:</b> ${ins.nascimento}</div>
+            <div><b>Voucher:</b> ${ins.voucher} · <b>Bilhete:</b> ${ins.bilhete}</div>
+            <div><b>Destino:</b> ${ins.destino}</div>
+            <div><b>Valor pago:</b> ${ins.valorPago}</div>
+          </div>
+          <details class="cov-details">
+            <summary>Ver coberturas contratadas</summary>
+            <div class="cov-grid">
+              ${ins.coberturas.map(c => `<div class="cov-label">${c[0]}</div><div class="cov-val">${c[1]}</div>`).join('')}
+            </div>
+          </details>
+        </div>
+        <div class="card-actions">
+          <button class="btn-sm btn-view" onclick="viewFile('${ins.file}', '${ins.nome} — Seguro Viagem')">Ver apólice (PDF)</button>
+          <a class="btn-sm btn-view" style="text-decoration:none;display:inline-block;" href="${ins.linkVoucher}" target="_blank" rel="noopener">Voucher online</a>
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div class="card c-insurance">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-icon">🚨</div>
+          <div style="flex:1;">
+            <div class="card-title">Emergência 24h — GTA</div>
+            <div class="card-sub">${EMERGENCY.note}</div>
+          </div>
+        </div>
+        <div class="card-detail-list">
+          <div><b>WhatsApp:</b> ${EMERGENCY.whatsapp}</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a class="btn-sm btn-view" style="text-decoration:none;display:inline-block;background:#25D366;color:#000;" href="${EMERGENCY.whatsappLink}" target="_blank" rel="noopener">Abrir WhatsApp</a>
+      </div>
+    </div>`;
+
+  html += `<div class="section-header">Telemedicina</div>`;
+  html += `
+    <div class="card c-insurance">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-icon">🩺</div>
+          <div style="flex:1;">
+            <div class="card-title">${TELEMEDICINE.titulo}</div>
+          </div>
+        </div>
+        <div class="card-notes">${TELEMEDICINE.desc}</div>
+        <div class="card-notes">
+          <b style="color:var(--text);">Passo a passo:</b>
+          <ul>${TELEMEDICINE.passos.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-sm btn-view" onclick="viewFile('${TELEMEDICINE.file}', 'Telemedicina — Scan Facial')">Ver material (PDF)</button>
+      </div>
+    </div>`;
+
+  const extras = extraDocs.filter(d => d.category === 'documentos');
+  if (extras.length) {
+    html += `<div class="section-header">Outros documentos</div>`;
+    extras.forEach(doc => { html += renderExtraCard(doc); });
+  } else {
+    html += `<div class="section-header">Outros documentos</div>
+      <div class="empty-state" style="padding:20px 10px;">
+        <p>Toque em <b style="color:var(--accent2)">+</b> para adicionar passagens aéreas ou outros documentos que ainda não estão aqui.</p>
+      </div>`;
+  }
+  return html;
+}
+
+/* ---------------- PASSEIOS ---------------- */
+function renderPasseios() {
+  let html = `<div class="intro-banner">Todos os vouchers dos passeios contratados, com horário de retirada, ponto de encontro, contato do fornecedor e o que levar. Toque em "Ver voucher" para abrir o PDF original.</div>`;
+  let lastDate = null;
+  TOURS.forEach(t => {
+    if (t.date !== lastDate) {
+      html += `<div class="section-header">${fmtDateLong(t.date)}</div>`;
+      lastDate = t.date;
+    }
+    const cls = t.type === 'transfer' ? 'c-transfer' : 'c-tour';
+    html += `
+      <div class="card ${cls}" id="tour-${t.id}">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-icon">${t.type === 'transfer' ? '🚐' : '🧭'}</div>
+            <div style="flex:1;">
+              <div class="card-title">${t.title}</div>
+              <div class="card-sub">${t.subtitle}</div>
+            </div>
+            <div class="card-time">${t.time}</div>
+          </div>
+          <div class="card-detail-list">
+            <div>${t.timeLabel}</div>
+            <div><b>Duração:</b> ${t.duration}</div>
+            <div><b>Ponto de encontro:</b> ${t.meetingPoint}</div>
+            <div><b>Fornecedor:</b> ${t.provider} · ${t.providerPhone}</div>
+            <div><b>Reserva:</b> ${t.reserva}</div>
+            <div><b>Valor:</b> ${t.price}</div>
+          </div>
+          <div class="card-notes">
+            <ul>${t.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+          </div>
+          <div class="card-notes" style="margin-top:10px;">
+            <span class="tag tag-cancel">Cancelamento</span> ${t.cancelation}
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-sm btn-view" onclick="viewFile('${t.voucher}', '${t.title.replace(/'/g, "\\'")}')">Ver voucher (PDF)</button>
+          <button class="btn-sm btn-view" onclick="setTabAndScrollItens('${t.id}')">Ver itens a levar</button>
+        </div>
+      </div>`;
+  });
+
+  const extras = extraDocs.filter(d => d.category === 'passeios');
+  if (extras.length) {
+    html += `<div class="section-header">Passeios extras adicionados</div>`;
+    extras.forEach(doc => { html += renderExtraCard(doc); });
+  }
+  return html;
+}
+function setTabAndScrollItens(tourId) {
+  setTab('itens');
+  setTimeout(() => {
+    const el = document.getElementById('itens-' + tourId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+function renderExtraCard(doc) {
+  const isPdf = doc.fileType && doc.fileType.includes('pdf');
+  const hasFile = !!doc.fileData;
+  return `
+    <div class="card c-tour">
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-icon">📄</div>
+          <div style="flex:1;">
+            <div class="card-title">${doc.name}</div>
+            <div class="card-sub">${doc.date ? fmtDateLong(doc.date) : 'Sem data'}${doc.notes ? ' · ' + doc.notes : ''}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-actions">
+        ${hasFile ? `<button class="btn-sm btn-view" onclick="viewExtra(${doc.id})">Ver arquivo</button>` : `<span style="font-size:0.75rem;color:var(--text2);opacity:0.6;">Sem arquivo anexado</span>`}
+        <button class="btn-sm btn-delete" onclick="deleteExtra(${doc.id})">Excluir</button>
+      </div>
+    </div>`;
+}
+
+/* ---------------- ITENS POR PASSEIO ---------------- */
+function checklistKey(scope, idx) { return `check_${scope}_${idx}`; }
+
+function renderItens() {
+  let html = `<div class="intro-banner">Checklist do que levar em cada passeio. Os itens marcados ficam salvos no seu aparelho.</div>`;
+
+  html += `<div class="section-header">Itens gerais da viagem</div>`;
+  html += renderChecklistBlock('geral', GENERAL_ITEMS);
+
+  TOURS.forEach(t => {
+    html += `<div class="section-header" id="itens-${t.id}">${t.time} · ${t.title}</div>`;
+    html += renderChecklistBlock(t.id, t.items);
+  });
+
+  return html;
+}
+
+function renderChecklistBlock(scope, items) {
+  let html = `<div class="checklist-progress" id="progress-${scope}"></div>`;
+  items.forEach((item, idx) => {
+    const key = checklistKey(scope, idx);
+    const checked = localStorage.getItem(key) === '1';
+    html += `
+      <label class="check-item ${checked ? 'checked' : ''}" data-scope="${scope}" data-idx="${idx}">
+        <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleCheck('${scope}', ${idx}, this.checked)" />
+        <span>${item}</span>
+      </label>`;
+  });
+  return html;
+}
+
+function toggleCheck(scope, idx, checked) {
+  const key = checklistKey(scope, idx);
+  if (checked) localStorage.setItem(key, '1'); else localStorage.removeItem(key);
+  const label = document.querySelector(`.check-item[data-scope="${scope}"][data-idx="${idx}"]`);
+  if (label) label.classList.toggle('checked', checked);
+  updateProgress(scope);
+}
+
+function updateProgress(scope) {
+  const items = scope === 'geral' ? GENERAL_ITEMS : (findTour(scope) ? findTour(scope).items : []);
+  const total = items.length;
+  let done = 0;
+  for (let i = 0; i < total; i++) if (localStorage.getItem(checklistKey(scope, i)) === '1') done++;
+  const el = document.getElementById('progress-' + scope);
+  if (el) el.innerHTML = `<b>${done}/${total}</b> itens prontos`;
+}
+
+function attachChecklistHandlers() {
+  updateProgress('geral');
+  TOURS.forEach(t => updateProgress(t.id));
+}
+
+/* ---------------- VIEWER (arquivos bundled) ---------------- */
+function viewFile(path, title) {
+  document.getElementById('viewer-title').textContent = title;
+  const frame = document.getElementById('pdf-frame');
+  const imgViewer = document.getElementById('img-viewer');
+  frame.style.display = '';
+  imgViewer.style.display = 'none';
+  frame.src = path;
+  document.getElementById('viewer-overlay').classList.add('open');
+}
+function closeViewer() {
+  document.getElementById('viewer-overlay').classList.remove('open');
+  document.getElementById('pdf-frame').src = '';
+  document.getElementById('viewer-img').src = '';
+}
+
+/* ---------------- EXTRA DOCS (IndexedDB) ---------------- */
+let pendingFile = null;
+let addModalCategory = 'documentos';
+
+function openAddModal(category) {
+  addModalCategory = category;
+  pendingFile = null;
+  document.getElementById('add-form').reset();
+  document.getElementById('f-category').value = category;
+  document.getElementById('add-modal-title').textContent = category === 'documentos' ? 'Adicionar Documento' : 'Adicionar Passeio Extra';
+  document.getElementById('upload-area').classList.remove('has-file');
+  document.getElementById('upload-label').textContent = 'Toque para selecionar';
+  document.getElementById('upload-sublabel').textContent = 'PDF, JPG, PNG';
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
 
 function onFileChange(input) {
   if (input.files.length === 0) return;
@@ -826,56 +1143,6 @@ function onFileChange(input) {
   area.classList.add('has-file');
   document.getElementById('upload-label').textContent = pendingFile.name;
   document.getElementById('upload-sublabel').textContent = `${(pendingFile.size / 1024).toFixed(0)} KB`;
-}
-
-function openAddModal() {
-  pendingFile = null;
-  document.getElementById('add-form').reset();
-  document.getElementById('upload-area').classList.remove('has-file');
-  document.getElementById('upload-label').textContent = 'Toque para selecionar';
-  document.getElementById('upload-sublabel').textContent = 'PDF, JPG, PNG';
-  document.getElementById('flight-selector-group').style.display = '';
-  buildDateScroll();
-  document.getElementById('add-modal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('add-modal').classList.remove('open');
-}
-
-async function submitDoc(e) {
-  e.preventDefault();
-  const category = document.getElementById('f-category').value;
-  const name = document.getElementById('f-name').value.trim();
-  const notes = document.getElementById('f-notes').value.trim();
-  const flightCode = category === 'passagens' ? document.getElementById('f-flight').value : '';
-
-  let fileData = null;
-  let fileType = null;
-  let fileName = null;
-
-  if (pendingFile) {
-    fileData = await readFileAsBase64(pendingFile);
-    fileType = pendingFile.type;
-    fileName = pendingFile.name;
-  }
-
-  const doc = {
-    category,
-    name,
-    notes,
-    flightCode,
-    dateKey: selectedFormDate,
-    fileData,
-    fileType,
-    fileName,
-    createdAt: Date.now()
-  };
-
-  await dbAdd(doc);
-  closeModal();
-  showToast('Documento salvo!');
-  render();
 }
 
 function readFileAsBase64(file) {
@@ -887,53 +1154,59 @@ function readFileAsBase64(file) {
   });
 }
 
-// ---- VIEW DOC ----
-function viewDoc(id) {
-  const doc = allDocs.find(d => d.id === id);
-  if (!doc || !doc.fileData) return;
+async function submitDoc(e) {
+  e.preventDefault();
+  const category = document.getElementById('f-category').value;
+  const name = document.getElementById('f-name').value.trim();
+  const date = document.getElementById('f-date').value;
+  const notes = document.getElementById('f-notes').value.trim();
 
-  document.getElementById('viewer-title').textContent = doc.name;
-  const isPdf = doc.fileType && doc.fileType.includes('pdf');
-
-  const frame = document.getElementById('pdf-frame');
-  const imgViewer = document.getElementById('img-viewer');
-  const img = document.getElementById('viewer-img');
-
-  if (isPdf) {
-    frame.style.display = '';
-    imgViewer.style.display = 'none';
-    frame.src = doc.fileData;
-  } else {
-    frame.style.display = 'none';
-    imgViewer.style.display = 'flex';
-    img.src = doc.fileData;
-    frame.src = '';
+  let fileData = null, fileType = null, fileName = null;
+  if (pendingFile) {
+    fileData = await readFileAsBase64(pendingFile);
+    fileType = pendingFile.type;
+    fileName = pendingFile.name;
   }
 
-  document.getElementById('viewer-overlay').classList.add('open');
-}
-
-function closeViewer() {
-  document.getElementById('viewer-overlay').classList.remove('open');
-  document.getElementById('pdf-frame').src = '';
-  document.getElementById('viewer-img').src = '';
-}
-
-// ---- DELETE ----
-async function deleteDoc(id) {
-  if (!confirm('Excluir este documento?')) return;
-  await dbDelete(id);
-  showToast('Removido.');
+  const doc = { category, name, date, notes, fileData, fileType, fileName, createdAt: Date.now() };
+  await dbAdd(doc);
+  closeModal();
+  showToast('Salvo!');
+  extraDocs = await dbGetAll();
   render();
 }
 
-// ---- CLOSE MODAL ON OVERLAY CLICK ----
-document.getElementById('add-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+function viewExtra(id) {
+  const doc = extraDocs.find(d => d.id === id);
+  if (!doc || !doc.fileData) return;
+  document.getElementById('viewer-title').textContent = doc.name;
+  const isPdf = doc.fileType && doc.fileType.includes('pdf');
+  const frame = document.getElementById('pdf-frame');
+  const imgViewer = document.getElementById('img-viewer');
+  const img = document.getElementById('viewer-img');
+  if (isPdf) {
+    frame.style.display = ''; imgViewer.style.display = 'none'; frame.src = doc.fileData;
+  } else {
+    frame.style.display = 'none'; imgViewer.style.display = 'flex'; img.src = doc.fileData; frame.src = '';
+  }
+  document.getElementById('viewer-overlay').classList.add('open');
+}
 
-// ---- INIT ----
-openDB().then(() => {
+async function deleteExtra(id) {
+  if (!confirm('Excluir este item?')) return;
+  await dbDelete(id);
+  showToast('Removido.');
+  extraDocs = await dbGetAll();
+  render();
+}
+
+document.getElementById('add-modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+
+/* ---------------- INIT ---------------- */
+updateCountdown();
+document.getElementById('fab').style.display = 'none';
+openDB().then(async () => {
+  extraDocs = await dbGetAll();
   render();
 });
 </script>

@@ -1,65 +1,57 @@
-# Atacama 2025 - App de Viagem
+# Atacama 2026 - App de Viagem
 
-App PWA para organizar os documentos da viagem ao Deserto do Atacama (9 a 17 de agosto de 2025).
+App PWA para organizar a viagem ao Deserto do Atacama (9 a 17 de agosto de 2026), com base nos vouchers de passeios (Civitatis), apólices de seguro viagem (GTA/IZA) e transfer contratados.
+
+---
+
+## Abas do app
+
+- **Cronograma** — roteiro dia a dia, do embarque no Brasil (9/08, 23h) até o voo de volta (17/08), com horário de retirada/duração de cada passeio e os intervalos livres entre eles.
+- **Documentos** — apólices de seguro viagem (Enzo e Esther), contato de emergência 24h e material de telemedicina/scan facial. É possível adicionar outros documentos (ex: passagem aérea) pelo botão **+**.
+- **Passeios** — voucher de cada passeio contratado (Valle de la Luna, Vale do Arco-íris, Observação de estrelas, Lagoa Cejar, El Tatio, Piedras Rojas, Rota dos Salares) e do transfer aeroporto ↔ San Pedro de Atacama, com ponto de encontro, fornecedor, valor e condições de cancelamento. O PDF original de cada voucher pode ser aberto direto no app.
+- **Itens** — checklist do que levar em cada passeio + lista geral da viagem. Os itens marcados ficam salvos no aparelho.
 
 ---
 
 ## Como instalar no Android
 
-1. Hospede o arquivo `index.html` online (opcoes gratuitas abaixo)
+1. Hospede a pasta do projeto online (opções gratuitas abaixo)
 2. Abra o link no **Google Chrome** do seu Android
 3. Toque nos **3 pontos** no canto superior direito
 4. Selecione **"Adicionar a tela inicial"**
-5. O app aparece como icone na tela inicial, igual a um app nativo
+5. O app aparece como ícone na tela inicial, igual a um app nativo
 
 ---
 
 ## Como hospedar gratuitamente
 
-### Opcao 1 — Netlify Drop (mais facil, sem cadastro)
+### Opção 1 — Netlify Drop (mais fácil, sem cadastro)
 1. Acesse [drop.netlify.com](https://app.netlify.com/drop)
-2. Arraste a pasta `atacama-travel-app` para a pagina
+2. Arraste a pasta do projeto para a página
 3. Copie o link gerado e abra no Chrome do Android
 
-### Opcao 2 — GitHub Pages
-1. Crie um repositorio no GitHub
-2. Envie os arquivos `index.html` e `manifest.json`
-3. Va em Settings > Pages > selecione a branch `main`
-4. Acesse o link `https://seu-usuario.github.io/nome-do-repo`
-
----
-
-## Funcionalidades
-
-- Documentos organizados por dia (9 a 17 de agosto)
-- 3 categorias: **Passagens**, **Passeios**, **Seguro**
-- Selecao especifica dos 4 voos:
-  - GRU -> SCL (Sao Paulo - Santiago)
-  - SCL -> CJC (Santiago - Calama)
-  - CJC -> SCL (Calama - Santiago)
-  - SCL -> GRU (Santiago - Sao Paulo)
-- Upload de PDF ou imagem para cada documento
-- Visualizacao de arquivos dentro do proprio app
-- Campo de observacoes por documento (horario, ponto de encontro, etc.)
-- Multiplos passeios por dia
-- Funciona offline apos o primeiro acesso
-- Todos os arquivos salvos localmente no aparelho
+### Opção 2 — GitHub Pages
+1. Vá em Settings > Pages > selecione a branch `main`
+2. Acesse o link `https://seu-usuario.github.io/nome-do-repo`
 
 ---
 
 ## Arquivos
 
 ```
-atacama-travel-app/
-  index.html      — app completo (HTML + CSS + JS em um unico arquivo)
-  manifest.json   — configuracao PWA para instalacao no Android
-  README.md       — este arquivo
+atacama-trip/
+  index.html                        — app completo (HTML + CSS + JS em um único arquivo)
+  manifest.json                     — configuração PWA para instalação no Android
+  assets/documentos/                — apólices de seguro (Enzo, Esther) e material de telemedicina
+  assets/passeios/                  — vouchers originais de cada passeio e do transfer
+  README.md                         — este arquivo
 ```
 
 ---
 
-## Observacoes
+## Observações
 
-- Os documentos sao salvos no **IndexedDB** do navegador, diretamente no aparelho. Nenhum dado e enviado para servidores externos.
-- Nao desinstale o Chrome nem limpe os dados do navegador para nao perder os documentos salvos.
-- Para backup, salve os PDFs originais em outro lugar tambem.
+- Os dados de cronograma, passeios e itens estão embutidos no código (`index.html`), extraídos diretamente dos vouchers e apólices fornecidos.
+- Documentos adicionados manualmente pelo botão **+** ficam salvos no **IndexedDB** do navegador, direto no aparelho — nenhum dado é enviado para servidores externos.
+- Horários de retirada dos passeios podem variar; os fornecedores confirmam o horário exato por WhatsApp na véspera de cada atividade.
+- Não desinstale o Chrome nem limpe os dados do navegador para não perder os itens marcados e documentos extras adicionados.
