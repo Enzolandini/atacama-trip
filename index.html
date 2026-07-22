@@ -230,9 +230,50 @@
     font-size: 0.85rem; opacity: 0; transition: all 0.3s; z-index: 900; white-space: nowrap;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---- lock screen ---- */
+  #lock-overlay {
+    position: fixed; inset: 0; background: var(--bg); z-index: 1000;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  #lock-overlay.hidden { display: none; }
+  .lock-card { width: 100%; max-width: 320px; text-align: center; }
+  .lock-card .lock-icon {
+    width: 56px; height: 56px; border-radius: 16px; background: var(--surface2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+    margin: 0 auto 16px;
+  }
+  .lock-card h1 { font-size: 1.15rem; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
+  .lock-card p { font-size: 0.8rem; color: var(--text2); margin-bottom: 20px; }
+  .lock-card input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--surface3); border-radius: var(--radius-sm);
+    color: var(--text); padding: 12px 14px; font-size: 1rem; outline: none; text-align: center;
+    letter-spacing: 1px;
+  }
+  .lock-card input.error { border-color: var(--danger); }
+  .lock-card .lock-error {
+    color: #e88; font-size: 0.78rem; margin-top: 8px; min-height: 1em; visibility: hidden;
+  }
+  .lock-card .lock-error.show { visibility: visible; }
+  #app-content.hidden { display: none; }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div id="lock-overlay">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <h1>Atacama 2026</h1>
+    <p>Digite a senha para acessar o roteiro da viagem.</p>
+    <form id="lock-form" onsubmit="return checkPassword(event)">
+      <input type="password" id="lock-input" placeholder="Senha" autocomplete="current-password" autofocus />
+      <div class="lock-error" id="lock-error">Senha incorreta. Tente novamente.</div>
+      <button type="submit" class="btn-primary" style="margin-top:14px;">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<div id="app-content" class="hidden">
 
 <div class="app-header">
   <div class="header-top">
@@ -309,7 +350,61 @@
 
 <div class="toast" id="toast"></div>
 
+</div><!-- /#app-content -->
+
 <script>
+/* =========================================================================
+   ACESSO — tela de senha simples. Só libera a exibição do app; a senha
+   nunca fica em texto puro no código, apenas o hash SHA-256 dela.
+   ========================================================================= */
+const LOCK_STORAGE_KEY = 'atacama2026_unlocked';
+const PASSWORD_HASH = '2a4d89c8de64317f7738651bc079dbedc34a1792dfde1761454c6005452e7ebb';
+
+async function sha256Hex(text) {
+  const buf = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function unlockApp() {
+  document.body.classList.remove('locked');
+  document.getElementById('lock-overlay').classList.add('hidden');
+  document.getElementById('app-content').classList.remove('hidden');
+  initApp();
+}
+
+async function checkPassword(e) {
+  e.preventDefault();
+  const input = document.getElementById('lock-input');
+  const errorEl = document.getElementById('lock-error');
+  const value = input.value;
+  const hash = await sha256Hex(value);
+  if (hash === PASSWORD_HASH) {
+    localStorage.setItem(LOCK_STORAGE_KEY, '1');
+    errorEl.classList.remove('show');
+    input.classList.remove('error');
+    unlockApp();
+  } else {
+    errorEl.classList.add('show');
+    input.classList.add('error');
+    input.value = '';
+    input.focus();
+  }
+  return false;
+}
+
+let appInitialized = false;
+function initApp() {
+  if (appInitialized) return;
+  appInitialized = true;
+  updateCountdown();
+  document.getElementById('fab').style.display = 'none';
+  openDB().then(async () => {
+    extraDocs = await dbGetAll();
+    render();
+  });
+}
+
 /* =========================================================================
    DADOS DA VIAGEM — extraídos dos vouchers Civitatis, apólices GTA/IZA e
    informações do usuário. Datas reais dos vouchers: agosto de 2026.
@@ -1203,12 +1298,9 @@ async function deleteExtra(id) {
 document.getElementById('add-modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
 
 /* ---------------- INIT ---------------- */
-updateCountdown();
-document.getElementById('fab').style.display = 'none';
-openDB().then(async () => {
-  extraDocs = await dbGetAll();
-  render();
-});
+if (localStorage.getItem(LOCK_STORAGE_KEY) === '1') {
+  unlockApp();
+}
 </script>
 </body>
 </html>
