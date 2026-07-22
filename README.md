@@ -1,14 +1,15 @@
 # Atacama 2026 - App de Viagem
 
-App PWA para organizar a viagem ao Deserto do Atacama (9 a 17 de agosto de 2026), com base nos vouchers de passeios (Civitatis), apólices de seguro viagem (GTA/IZA) e transfer contratados.
+App PWA para organizar a viagem ao Deserto do Atacama (9 a 17 de agosto de 2026), com base nos vouchers de passeios (Civitatis), apólices de seguro viagem (GTA/IZA) e transfer contratados. O acesso é protegido por senha (tela inicial).
 
 ---
 
 ## Abas do app
 
-- **Cronograma** — roteiro dia a dia, do embarque no Brasil (9/08, 23h) até o voo de volta (17/08), com horário de retirada/duração de cada passeio e os intervalos livres entre eles.
+- **Cronograma** — roteiro dia a dia, do embarque no Brasil (9/08, 23h) até o voo de volta (17/08), com horário de retirada/duração de cada passeio, as 3 refeições do dia e os intervalos livres entre eles.
 - **Documentos** — apólices de seguro viagem (Enzo e Esther), contato de emergência 24h e material de telemedicina/scan facial. É possível adicionar outros documentos (ex: passagem aérea) pelo botão **+**.
-- **Passeios** — voucher de cada passeio contratado (Valle de la Luna, Vale do Arco-íris, Observação de estrelas, Lagoa Cejar, El Tatio, Piedras Rojas, Rota dos Salares) e do transfer aeroporto ↔ San Pedro de Atacama, com ponto de encontro, fornecedor, valor e condições de cancelamento. O PDF original de cada voucher pode ser aberto direto no app.
+- **Passeios** — voucher de cada passeio contratado (Valle de la Luna, Vale do Arco-íris, Observação de estrelas, Lagoa Cejar, El Tatio, Piedras Rojas, Rota dos Salares) e do transfer aeroporto ↔ San Pedro de Atacama, com ponto de encontro, fornecedor, valor, condições de cancelamento e se alguma refeição já está inclusa. O PDF original de cada voucher pode ser aberto direto no app.
+- **Refeições** — café da manhã, almoço e jantar de cada um dos 9 dias. Quando a refeição já vem no passeio (ex: café da manhã do El Tatio), aparece fixo; nos demais casos dá pra anotar o restaurante — café da manhã sem passeio assume o hotel por padrão. Qualquer edição aqui aparece automaticamente no Cronograma.
 - **Itens** — checklist do que levar em cada passeio + lista geral da viagem. Os itens marcados ficam salvos no aparelho.
 
 ---
