@@ -27,6 +27,8 @@
     --transfer-accent: #4db6e8;
     --free: #2b2b2b;
     --free-accent: #8a8a9a;
+    --meal: #4a3a1a;
+    --meal-accent: #e0a94d;
     --danger: #c0392b;
     --radius: 12px;
     --radius-sm: 8px;
@@ -87,6 +89,10 @@
   .card.c-transfer { border-left-color: var(--transfer-accent); }
   .card.c-insurance { border-left-color: var(--insurance-accent); }
   .card.c-free { border-left-color: var(--free-accent); background: var(--surface2); }
+  .card.c-meal { border-left-color: var(--meal-accent); }
+  .card.c-meal .card-icon { background: var(--meal); }
+  .card.c-meal .form-group { margin-bottom: 0; }
+  .card.c-meal .form-group label { margin-bottom: 5px; }
   .card-body { padding: 13px 14px; }
   .card-top { display: flex; align-items: flex-start; gap: 10px; }
   .card-icon {
@@ -287,6 +293,7 @@
     <button class="tab-btn active" data-tab="cronograma" onclick="setTab('cronograma')">Cronograma</button>
     <button class="tab-btn" data-tab="documentos" onclick="setTab('documentos')">Documentos</button>
     <button class="tab-btn" data-tab="passeios" onclick="setTab('passeios')">Passeios</button>
+    <button class="tab-btn" data-tab="refeicoes" onclick="setTab('refeicoes')">Refeições</button>
     <button class="tab-btn" data-tab="itens" onclick="setTab('itens')">Itens</button>
   </div>
 </div>
@@ -523,6 +530,7 @@ const TOURS = [
     title: 'Transfer Aeroporto de Calama → San Pedro de Atacama',
     subtitle: 'Ida · Transfer Pampa',
     type: 'transfer',
+    mealsIncluded: [],
     time: '07:09',
     timeLabel: 'Chegada do voo LATAM LA142 em Calama',
     duration: 'Trajeto de aprox. 1h30 até San Pedro de Atacama',
@@ -547,6 +555,7 @@ const TOURS = [
     title: 'Excursão ao Valle de la Luna',
     subtitle: 'Tour sem retirada de ingresso',
     type: 'tour',
+    mealsIncluded: [],
     time: '15:30',
     timeLabel: 'Apresentar-se 10 min antes (15:20)',
     duration: 'Aprox. 4h · retorno estimado ~19:30 (pôr do sol)',
@@ -571,6 +580,7 @@ const TOURS = [
     title: 'Excursão ao Vale do Arco-íris',
     subtitle: 'Tour em português',
     type: 'tour',
+    mealsIncluded: [],
     time: '07:00',
     timeLabel: 'Retirada entre 07:00–07:40 no hotel',
     duration: 'Aprox. 7-8h · retorno estimado ~14:30-15:00',
@@ -594,6 +604,7 @@ const TOURS = [
     title: 'Observação de estrelas no deserto de Atacama',
     subtitle: 'Passeio astronômico',
     type: 'tour',
+    mealsIncluded: [],
     time: '21:45',
     timeLabel: 'Retirada no hotel às 21:45',
     duration: 'Aprox. 2h30 · retorno estimado ~00:15',
@@ -617,6 +628,7 @@ const TOURS = [
     title: 'Excursão à lagoa Cejar, Tebenquiche e Ojos del Salar',
     subtitle: 'Tour em português',
     type: 'tour',
+    mealsIncluded: [],
     time: '14:00',
     timeLabel: 'Apresentar-se 10 min antes (13:50)',
     duration: 'Aprox. 6h · retorno estimado ~20:00 (após o pôr do sol)',
@@ -640,6 +652,7 @@ const TOURS = [
     title: 'Excursão aos gêiseres de El Tatio',
     subtitle: 'Tour em português com ingresso',
     type: 'tour',
+    mealsIncluded: ['cafe'],
     time: '05:00',
     timeLabel: 'Retirada entre 04:30–05:10 (confirmado na véspera)',
     duration: 'Aprox. 8h · retorno estimado ~13:00',
@@ -664,6 +677,7 @@ const TOURS = [
     title: 'Piedras Rojas, Salar de Atacama e lagos do altiplano',
     subtitle: 'Tour em português · dia inteiro',
     type: 'tour',
+    mealsIncluded: [],
     time: '06:00',
     timeLabel: 'Retirada entre 06:00–06:40',
     duration: 'Aprox. 11-12h · retorno estimado ~18:00',
@@ -688,6 +702,7 @@ const TOURS = [
     title: 'Rota dos Salares (Licancabur, Salar, Aguas Calientes, Quisquiro)',
     subtitle: 'Tour em português',
     type: 'tour',
+    mealsIncluded: [],
     time: '07:30',
     timeLabel: 'Retirada entre 07:00–07:40 (maio a setembro)',
     duration: 'Aprox. 9-10h · retorno estimado ~17:00',
@@ -711,6 +726,7 @@ const TOURS = [
     title: 'Transfer San Pedro de Atacama → Aeroporto de Calama',
     subtitle: 'Volta · Transfer Pampa',
     type: 'transfer',
+    mealsIncluded: [],
     time: '~18:00',
     timeLabel: 'Horário exato avisado pelo fornecedor (aprox. 2h antes do voo)',
     duration: 'Trajeto de aprox. 1h30',
@@ -727,6 +743,73 @@ const TOURS = [
     cancelation: 'Mesmas condições do voucher de ida (reserva única A39201353).',
     voucher: 'assets/passeios/10-08-transfer.pdf',
     items: ['Malas prontas', 'Documentos e comprovantes de viagem', 'Conferir se não esqueceu nada no hotel']
+  }
+];
+
+// ---- REFEIÇÕES — café da manhã, almoço e jantar de cada dia ----
+// source: 'tour' (já incluída em um passeio, não editável) | 'hotel' (sem passeio cobrindo —
+// assume-se café da manhã no hotel, editável) | 'free' (sem passeio cobrindo, editável, sem valor padrão)
+const MEAL_TYPES = [
+  { key: 'cafe', label: 'Café da manhã', icon: '☕' },
+  { key: 'almoco', label: 'Almoço', icon: '🍲' },
+  { key: 'janta', label: 'Jantar', icon: '🍽' }
+];
+const MEAL_LABELS = { cafe: 'Café da manhã', almoco: 'Almoço', janta: 'Jantar' };
+
+const MEALS = [
+  {
+    date: '2026-08-09',
+    cafe: { source: 'free', time: '08:00', note: 'Ainda no Brasil' },
+    almoco: { source: 'free', time: '12:30', note: 'Ainda no Brasil' },
+    janta: { source: 'free', time: '19:00', note: 'Antes do embarque (23h)' }
+  },
+  {
+    date: '2026-08-10',
+    cafe: { source: 'hotel', time: '09:30', note: 'Chegando de Calama — combine o horário com o hotel' },
+    almoco: { source: 'free', time: '13:00' },
+    janta: { source: 'free', time: '20:00' }
+  },
+  {
+    date: '2026-08-11',
+    cafe: { source: 'hotel', time: '08:30' },
+    almoco: { source: 'free', time: '13:00', note: 'Antes do Valle de la Luna (15:30)' },
+    janta: { source: 'free', time: '20:30', note: 'Depois do passeio (retorno ~19:30)' }
+  },
+  {
+    date: '2026-08-12',
+    cafe: { source: 'hotel', time: '06:30', note: 'Cedo — o passeio sai às 7h' },
+    almoco: { source: 'free', time: '15:30', note: 'Depois do Vale do Arco-íris (retorno ~15:00)' },
+    janta: { source: 'free', time: '20:00', note: 'Antes da observação de estrelas (21:45)' }
+  },
+  {
+    date: '2026-08-13',
+    cafe: { source: 'hotel', time: '08:30' },
+    almoco: { source: 'free', time: '12:30', note: 'Antes da Lagoa Cejar (14:00)' },
+    janta: { source: 'free', time: '20:30', note: 'Depois do passeio (retorno ~20:00)' }
+  },
+  {
+    date: '2026-08-14',
+    cafe: { source: 'tour', tourId: 'el-tatio', label: 'Incluído no passeio El Tatio: pães, queijos, frios, abacate, leite e café' },
+    almoco: { source: 'free', time: '13:30', note: 'Depois do El Tatio (retorno ~13:00)' },
+    janta: { source: 'free', time: '20:00' }
+  },
+  {
+    date: '2026-08-15',
+    cafe: { source: 'hotel', time: '05:30', note: 'Bem cedo — o passeio sai às 6h, combine com o hotel' },
+    almoco: { source: 'free', time: '13:00', note: 'Não incluso no passeio Piedras Rojas — leve um lanche' },
+    janta: { source: 'free', time: '18:30', note: 'Depois do passeio (retorno ~18:00)' }
+  },
+  {
+    date: '2026-08-16',
+    cafe: { source: 'hotel', time: '06:30', note: 'Cedo — o passeio sai às 7h30' },
+    almoco: { source: 'free', time: '13:00', note: 'Não incluso no passeio Rota dos Salares' },
+    janta: { source: 'free', time: '17:30', note: 'Depois do passeio (retorno ~17:00)' }
+  },
+  {
+    date: '2026-08-17',
+    cafe: { source: 'hotel', time: '08:30' },
+    almoco: { source: 'free', time: '13:00', note: 'Antes do transfer para o aeroporto' },
+    janta: { source: 'free', time: '21:30', note: 'Provavelmente durante a viagem de volta' }
   }
 ];
 
@@ -925,20 +1008,60 @@ function render() {
   if (currentTab === 'cronograma') main.innerHTML = renderCronograma();
   else if (currentTab === 'documentos') main.innerHTML = renderDocumentos();
   else if (currentTab === 'passeios') main.innerHTML = renderPasseios();
+  else if (currentTab === 'refeicoes') main.innerHTML = renderRefeicoes();
   else if (currentTab === 'itens') main.innerHTML = renderItens();
   if (currentTab === 'itens') attachChecklistHandlers();
 }
 
+/* ---------------- REFEIÇÕES (helpers usados também no Cronograma) ---------------- */
+function mealKey(date, type) { return `meal_${date}_${type}`; }
+function escapeHtml(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function timeToMinutes(t) {
+  if (!t || t === '—') return -1;
+  const m = String(t).replace('~', '').match(/(\d{1,2}):(\d{2})/);
+  if (!m) return 9999;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+function getMealValue(date, type, info) {
+  const stored = localStorage.getItem(mealKey(date, type));
+  if (stored !== null) return stored;
+  return info.source === 'hotel' ? HOTEL.name : '';
+}
+function saveMeal(date, type, value) {
+  localStorage.setItem(mealKey(date, type), value);
+}
+// Blocos de refeição para inserir no Cronograma (refeições incluídas em passeio já
+// aparecem no próprio bloco do passeio, então aqui só entram café/almoço/jantar "livres").
+function getMealBlocksForDate(date) {
+  const dayMeals = MEALS.find(m => m.date === date);
+  if (!dayMeals) return [];
+  const blocks = [];
+  MEAL_TYPES.forEach(mt => {
+    const info = dayMeals[mt.key];
+    if (!info || info.source === 'tour') return;
+    const value = getMealValue(date, mt.key, info);
+    const subParts = [value || 'A definir — adicione na aba Refeições'];
+    if (info.note) subParts.push(info.note);
+    blocks.push({ time: info.time, end: '', type: 'refeicao', title: mt.label, sub: subParts.join(' · '), mealDate: date });
+  });
+  return blocks;
+}
+
 /* ---------------- CRONOGRAMA ---------------- */
 function blockIcon(type) {
-  return { voo: '✈', transfer: '🚐', tour: '🧭', livre: '☕', hotel: '🏨' }[type] || '•';
+  return { voo: '✈', transfer: '🚐', tour: '🧭', livre: '☕', hotel: '🏨', refeicao: '🍽' }[type] || '•';
 }
 function renderCronograma() {
-  let html = `<div class="intro-banner"><b>Roteiro completo</b> de 9 a 17 de agosto — horários de retirada, duração estimada de cada passeio e os intervalos livres entre eles. Horários marcados com "~" são estimativas de duração (os fornecedores confirmam o horário exato de retirada na véspera).</div>`;
+  let html = `<div class="intro-banner"><b>Roteiro completo</b> de 9 a 17 de agosto — horários de retirada, duração estimada de cada passeio, refeições e os intervalos livres entre eles. Horários marcados com "~" são estimativas (os fornecedores confirmam o horário exato de retirada na véspera). Toque em uma refeição para editar o restaurante na aba Refeições.</div>`;
   SCHEDULE.forEach(day => {
+    const allBlocks = day.blocks.concat(getMealBlocksForDate(day.date))
+      .slice()
+      .sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
     html += `<div class="day-group">`;
     html += `<div class="day-label"><span class="day-num">${day.date.slice(-2)}/08</span> ${day.label}</div>`;
-    day.blocks.forEach(b => {
+    allBlocks.forEach(b => {
       const timeRange = b.end ? `${b.time} – ${b.end}` : b.time;
       if (b.type === 'livre') {
         html += `
@@ -951,9 +1074,11 @@ function renderCronograma() {
             <div class="card-time">${timeRange}</div>
           </div>`;
       } else {
-        const cls = b.type === 'transfer' ? 'c-transfer' : (b.type === 'voo' ? 'c-transfer' : 'c-tour');
+        const cls = b.type === 'transfer' ? 'c-transfer' : (b.type === 'voo' ? 'c-transfer' : (b.type === 'refeicao' ? 'c-meal' : 'c-tour'));
+        const clickAttr = b.link ? `onclick="setTabAndOpenTour('${b.link}')" style="cursor:pointer;"`
+          : (b.mealDate ? `onclick="setTabAndScrollRefeicoes('${b.mealDate}')" style="cursor:pointer;"` : '');
         html += `
-          <div class="card ${cls}" ${b.link ? `onclick="setTabAndOpenTour('${b.link}')" style="cursor:pointer;"` : ''}>
+          <div class="card ${cls}" ${clickAttr}>
             <div class="card-body">
               <div class="card-top">
                 <div class="card-icon">${blockIcon(b.type)}</div>
@@ -976,6 +1101,13 @@ function setTabAndOpenTour(tourId) {
   setTimeout(() => {
     const el = document.getElementById('tour-' + tourId);
     if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('highlight'); }
+  }, 80);
+}
+function setTabAndScrollRefeicoes(date) {
+  setTab('refeicoes');
+  setTimeout(() => {
+    const el = document.getElementById('refeicoes-' + date);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 80);
 }
 
@@ -1099,6 +1231,9 @@ function renderPasseios() {
             <ul>${t.notes.map(n => `<li>${n}</li>`).join('')}</ul>
           </div>
           <div class="card-notes" style="margin-top:10px;">
+            <span class="tag tag-info">Refeição</span> ${t.mealsIncluded.length ? t.mealsIncluded.map(m => MEAL_LABELS[m]).join(', ') + ' inclusa(o) neste passeio' : 'Nenhuma refeição inclusa neste passeio'}
+          </div>
+          <div class="card-notes" style="margin-top:6px;">
             <span class="tag tag-cancel">Cancelamento</span> ${t.cancelation}
           </div>
         </div>
@@ -1122,6 +1257,56 @@ function setTabAndScrollItens(tourId) {
     const el = document.getElementById('itens-' + tourId);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 80);
+}
+
+/* ---------------- REFEIÇÕES ---------------- */
+function renderRefeicoes() {
+  let html = `<div class="intro-banner">Café da manhã, almoço e jantar de cada dia. Quando a refeição já está incluída em um passeio, ela aparece fixa. Nos outros casos você pode anotar o restaurante — o café da manhã sem passeio assume o hotel por padrão. Qualquer alteração aqui aparece também no Cronograma.</div>`;
+  MEALS.forEach(day => {
+    html += `<div class="section-header" id="refeicoes-${day.date}">${fmtDateLong(day.date)}</div>`;
+    MEAL_TYPES.forEach(mt => {
+      const info = day[mt.key];
+      if (info.source === 'tour') {
+        const tour = findTour(info.tourId);
+        html += `
+          <div class="card c-meal">
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-icon">${mt.icon}</div>
+                <div style="flex:1;">
+                  <div class="card-title">${mt.label}</div>
+                </div>
+              </div>
+              <div class="card-notes" style="margin-top:8px;">
+                <span class="tag tag-info">Incluso no passeio</span> ${info.label}
+              </div>
+            </div>
+            ${tour ? `<div class="card-actions"><button class="btn-sm btn-view" onclick="setTabAndOpenTour('${tour.id}')">Ver passeio</button></div>` : ''}
+          </div>`;
+      } else {
+        const value = getMealValue(day.date, mt.key, info);
+        const placeholder = info.source === 'hotel' ? HOTEL.name : 'Ex: Restaurante Adobe';
+        html += `
+          <div class="card c-meal">
+            <div class="card-body">
+              <div class="card-top">
+                <div class="card-icon">${mt.icon}</div>
+                <div style="flex:1;">
+                  <div class="card-title">${mt.label}</div>
+                  ${info.note ? `<div class="card-sub">${info.note}</div>` : ''}
+                </div>
+                <div class="card-time">${info.time}</div>
+              </div>
+              <div class="form-group" style="margin-top:10px;">
+                <label>${info.source === 'hotel' ? 'Onde vai comer (padrão: hotel)' : 'Onde vai comer'}</label>
+                <input type="text" value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}" oninput="saveMeal('${day.date}', '${mt.key}', this.value)" />
+              </div>
+            </div>
+          </div>`;
+      }
+    });
+  });
+  return html;
 }
 
 function renderExtraCard(doc) {
